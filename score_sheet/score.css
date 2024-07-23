@@ -11,6 +11,10 @@ h1{
     text-align: center;
 }
 
+.homeBlock{
+    text-align: center;
+}
+
 .homeTeam {
     font-size: 30px;
     width: 250px;
@@ -26,3 +30,26 @@ h1{
     border: blue solid;
 }
 
+.homeNum {
+    text-align: center;
+}
+
+
+.homePlayerInfo, .homePlayerStats, .homeScore, .testTable{
+    display: inline-table;
+    vertical-align: bottom;
+}
+
+.homeInfoBlock {
+    /* border: black solid; */
+}
+
+h3{
+    display: inline;
+    margin-left: .5em;
+    margin-right: .5em;
+}
+
+td {
+    text-align: center;
+}
