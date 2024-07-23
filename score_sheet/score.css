@@ -53,3 +53,36 @@ h3{
 td {
     text-align: center;
 }
+
+.homeScore{
+    width: 275px;
+    height: 268px;
+}
+
+.homeScoreBox{
+    border: black solid;
+    width: 120px;
+    height: 75px;
+    text-align: center;
+    font-size: 70px;
+}
+
+.homeFoulBox {
+    border: black solid;
+    width: 70px;
+    height: 50px;
+    text-align: center;
+    font-size: 38px;
+}
+
+.scoreBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+    padding-top: 20px;
+}
+
+.homeTeamFouls, .homeTeamScore {
+    color: blue;
+}
