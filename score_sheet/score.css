@@ -1,0 +1,28 @@
+h1{
+    text-align: center;
+}
+
+.gameDay_info{
+    text-align: center;
+    color: blue;
+}
+
+.gameDate, .gameTime {
+    text-align: center;
+}
+
+.homeTeam {
+    font-size: 30px;
+    width: 250px;
+    text-align: center;
+}
+
+.fistHomeTimeOut, .secondHomeTimeOut{
+    width: 50px;
+    text-align: center;
+}
+
+.homePlayerInfo {
+    border: blue solid;
+}
+
