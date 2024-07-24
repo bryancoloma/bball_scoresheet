@@ -26,3 +26,10 @@ function addTotalHomePoints() {
     })
     document.getElementById('homeTotalScore').value = homeTotalPoints;
 }
+
+//Allow ipad compatibility
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('touchstart', function() {
+        this.click();
+    })
+})
