@@ -33,3 +33,12 @@ document.querySelectorAll('button').forEach(button => {
         this.click();
     })
 })
+
+//Calculate total home fouls
+function incrementHomeTotalFouls(addHomeFoulsID, homeFoulIncrement) {
+    const totalHomeFoulElementAdd = document.getElementById(addHomeFoulsID);
+    letcurrentHomeFoulAdd = parseInt(totalHomeFoulElementAdd.textContent, 10);
+    currentHOmeFoulAdd += homeFoulIncrement;
+    totalHomeFoulElementAdd.textContent = currentHOmeFoulAdd;
+    addTotalHomeFouls();
+}
