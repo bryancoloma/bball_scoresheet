@@ -1,5 +1,4 @@
 //Add home points
-
 function incrementHomeTotalPoints(addHomePointsId, homePointIncrement) {
     const totalHomePointElementAdd = document.getElementById(addHomePointsId);
     let currentHomePointAdd = parseInt(totalHomePointElementAdd.textContent, 10);
@@ -34,10 +33,10 @@ document.querySelectorAll('button').forEach(button => {
     })
 })
 
-//Calculate total home fouls
+//Add total home fouls
 function incrementHomeTotalFouls(addHomeFoulsID, homeFoulIncrement) {
     const totalHomeFoulElementAdd = document.getElementById(addHomeFoulsID);
-    letcurrentHomeFoulAdd = parseInt(totalHomeFoulElementAdd.textContent, 10);
+    letCurrentHomeFoulAdd = parseInt(totalHomeFoulElementAdd.textContent, 10);
     currentHOmeFoulAdd += homeFoulIncrement;
     totalHomeFoulElementAdd.textContent = currentHOmeFoulAdd;
     addTotalHomeFouls();
@@ -50,4 +49,14 @@ function decrementHomeTotalFouls(subHomeFoulsId, homeFoulDecrement) {
     currentHomeFoulSub -= homeFoulDecrement;
     totalHomeFoulElementSub.textContent = currentHomeFoulSub;
     addTotalHomeFouls();
+}
+
+//Calculate Total Fouls
+function addTotalHomeFouls() {
+    const addAllHomeFouls = document.querySelectorAll('h3[id^="addHomeTotalFouls"]');
+    let homeTotalFouls = 0;
+    addAllHomeFouls.forEach(homeFouls => {
+        homeTotalFouls += parseInt(homeFouls.textContent, 10);
+    })
+    document.getElementById('homeTotalFouls').value = homeTotalFouls;
 }
