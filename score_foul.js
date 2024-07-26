@@ -42,3 +42,12 @@ function incrementHomeTotalFouls(addHomeFoulsID, homeFoulIncrement) {
     totalHomeFoulElementAdd.textContent = currentHOmeFoulAdd;
     addTotalHomeFouls();
 }
+
+//Subtract total Home Fouls
+function decrementHomeTotalFouls(subHomeFoulsId, homeFoulDecrement) {
+    const totalHomeFoulElementSub = document.getElementById(subHomeFoulsId);
+    let currentHomeFoulSub = parseInt(totalHomeFoulElementSub.textContent,10);
+    currentHomeFoulSub -= homeFoulDecrement;
+    totalHomeFoulElementSub.textContent = currentHomeFoulSub;
+    addTotalHomeFouls();
+}
