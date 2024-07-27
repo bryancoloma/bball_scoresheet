@@ -74,15 +74,15 @@
                         </td>
 
                         <td>
-                            <button class="increment-button-score">+1</button>
-                            <h3>0</h3>
-                            <button class="decrement-button-score">-1</button>
+                            <button class="increment-button-score" onclick="incrementHomeTotalPoints('addHomeTotalPoints1', 1)">+1</button>
+                            <h3 id="addHomeTotalPoints1">0</h3>
+                            <button class="decrement-button-score" onclick="decrementHomeTotalPoints('addHomeTotalPoints1', 1)">-1</button>
                         </td>
 
                         <td>
-                            <button class="increment-button-foul">+1</button>
-                            <h3>0</h3>
-                            <button class="decrement-button-foul">-1</button>
+                            <button class="increment-button-foul" onclick="incrementHomeTotalFouls('addHomeTotalFouls1', 1)">+1</button>
+                            <h3 id="addHomeTotalFouls1">0</h3>
+                            <button class="decrement-button-foul" onclick="decrementHomeTotalFouls('addHomeTotalFouls1', 1)">-1</button>
                         </td>
                     </tr>
 
@@ -352,12 +352,12 @@
                 <div class="homeScore">
                     <div class="scoreBox">
                         
-                        <input type="text" class="homeFoulBox">
+                        <input type="text" id="homeTotalFouls" class="homeFoulBox" readonly>
                         <label for="homeTeamFouls" class="homeTeamFouls">HOME FOULS:</label>
 
                         &#160;
 
-                        <input type="text" class="homeScoreBox">
+                        <input type="text" id="homeTotalScore" class="homeScoreBox" readonly>
                         <label for="" class="homeTeamScore">HOME SCORE</label>
 
                     </div>
