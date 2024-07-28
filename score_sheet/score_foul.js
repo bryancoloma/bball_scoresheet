@@ -83,7 +83,7 @@ function decrementAwayTotalPoints(subAwayPointsId, awayPointDecrement) {
     addTotalAwayPoints();
 }
 
-//Calculate total away points
+//Calculate total Away Points
 function addTotalAwayPoints() {
     const addAllAwayPoints = document.querySelectorAll('h3[id^="addAwayTotalPoints"]');
         let awayTotalPoints = 0;
@@ -91,4 +91,32 @@ function addTotalAwayPoints() {
         awayTotalPoints += parseInt(awayPoints.textContent, 10);
     })
     document.getElementById('awayTotalScore').value = awayTotalPoints;
+}
+
+//Add total Away Fouls
+function incrementAwayTotalFouls(addAwayFoulsID, awayFoulIncrement) {
+    const totalAwayFoulElementAdd = document.getElementById(addAwayFoulsID);
+    let currentAwayFoulAdd = parseInt(totalAwayFoulElementAdd.textContent, 10);
+    currentAwayFoulAdd += awayFoulIncrement;
+    totalAwayFoulElementAdd.textContent = currentAwayFoulAdd;
+    addTotalAwayFouls();
+}
+
+//Subtract total Away Fouls
+function decrementAwayTotalFouls(subAwayFoulsId, awayFoulDecrement) {
+    const totalAwayFoulElementSub = document.getElementById(subAwayFoulsId);
+    let currentAwayFoulSub = parseInt(totalAwayFoulElementSub.textContent,10);
+    currentAwayFoulSub -= awayFoulDecrement;
+    totalAwayFoulElementSub.textContent = currentAwayFoulSub;
+    addTotalAwayFouls();
+}
+
+//Calculate Total Away Fouls
+function addTotalAwayFouls() {
+    const addAllAwayFouls = document.querySelectorAll('h3[id^="addAwayTotalFouls"]');
+    let awayTotalFouls = 0;
+    addAllAwayFouls.forEach(awayFouls => {
+        awayTotalFouls += parseInt(awayFouls.textContent, 10);
+    })
+    document.getElementById('awayTotalFouls').value = awayTotalFouls;
 }
