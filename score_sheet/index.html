@@ -425,15 +425,15 @@
                         </td>
 
                         <td>
-                            <button class="increment-button-score">+1</button>
-                            <h3>0</h3>
-                            <button class="decrement-button-score">-1</button>
+                            <button class="increment-button-score" onclick="incrementAwayTotalPoints('addAwayTotalPoints1', 1)">+1</button>
+                            <h3 id="addAwayTotalPoints1">0</h3>
+                            <button class="decrement-button-score" onclick="decrementAwayTotalPoints('addAwayTotalPoints1', 1)">-1</button>
                         </td>
 
                         <td>
-                            <button class="increment-button-foul">+1</button>
-                            <h3>0</h3>
-                            <button class="decrement-button-foul">-1</button>
+                            <button class="increment-button-foul" onclick="incrementAwayTotalFouls('addAwayTotalFouls1', 1)">+1</button>
+                            <h3 id="addAwayTotalFouls1">0</h3>
+                            <button class="decrement-button-foul" onclick="decrementAwayTotalFouls('addAwayTotalFouls1', 1)">-1</button>
                         </td>
                     </tr>
 
