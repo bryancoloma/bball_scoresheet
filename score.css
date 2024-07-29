@@ -31,11 +31,11 @@ h1{
 }
 
 .homePlayerInfo {
-    border: blue solid;
+    border: rgb(216, 233, 254) solid;
 }
 
 .awayPlayerInfo {
-    border: red solid;
+    border: rgb(65, 167, 245) solid;
 }
 
 
@@ -94,9 +94,9 @@ td {
 }
 
 .homeTeamFouls, .homeTeamScore {
-    color: blue;
+    color: rgb(33, 100, 201);
 }
 
 .awayTeamFouls, .awayTeamScore {
-    color: red;
+    color: rgb(124, 183, 234);
 }
