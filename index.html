@@ -33,13 +33,19 @@
 
         <div class="homeTimeOut">
             <label class="homeTO1">1st Half Time Out: </label>
-            <input type="text" class="fistHomeTimeOut" max="5">
+            <input type="checkbox" class="fistHomeTimeOut">
 
             &#160;
             &#160;
 
             <label class="homeTO2">2nd Half Time Out: </label>
-            <input type="text" class="secondHomeTimeOut" maxlength="5">
+            <input type="checkbox" class="secondHomeTimeOut" maxlength="5">
+            
+            &#160;
+            &#160;
+
+            <label class="homeTO2">Overtime - Time Out: </label>
+            <input type="checkbox" class="overTimeHomeTimeOut" maxlength="5">
         </div>
 
         <br>
@@ -353,7 +359,7 @@
                 <div class="homeScore">
                     <div class="scoreBox">
                         
-                        <input type="text" id="homeTotalFouls" class="homeFoulBox" readonly>
+                        <input type="text" id="homeTotalFouls" class="homeFoulBox">
                         <label for="homeTeamFouls" class="homeTeamFouls">HOME FOULS:</label>
 
                         &#160;
@@ -383,13 +389,19 @@
 
         <div class="awayTimeOut">
             <label class="awayTO1">1st Half Time Out: </label>
-            <input type="text" class="fistAwayTimeOut" max="5">
+            <input type="checkbox" class="fistAwayTimeOut" max="5">
 
             &#160;
             &#160;
 
             <label class="awayTO2">2nd Half Time Out: </label>
-            <input type="text" class="secondAwayTimeOut" maxlength="5">
+            <input type="checkbox" class="secondAwayTimeOut" maxlength="5">
+
+            &#160;
+            &#160;
+
+            <label class="awayTO2">Overtime - Time Out: </label>
+            <input type="checkbox" class="overTimeAwayTimeOut" maxlength="5">
         </div>
 
         <br>
@@ -703,7 +715,7 @@
                 <div class="awayScore">
                     <div class="scoreBox">
                         
-                        <input type="text" id="awayTotalFouls" class="awayFoulBox" readonly>
+                        <input type="text" id="awayTotalFouls" class="awayFoulBox">
                         <label for="awayTeamFouls" class="awayTeamFouls">AWAY FOULS:</label>
 
                         &#160;

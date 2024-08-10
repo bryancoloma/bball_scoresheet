@@ -25,8 +25,9 @@ h1{
     text-align: center;
 }
 
-.fistHomeTimeOut, .secondHomeTimeOut, .fistAwayTimeOut, .secondAwayTimeOut{
+.fistHomeTimeOut, .secondHomeTimeOut, .overTimeHomeTimeOut, .fistAwayTimeOut, .secondAwayTimeOut, .overTimeAwayTimeOut{
     width: 50px;
+    height: 30px;
     text-align: center;
 }
 
