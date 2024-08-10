@@ -20,7 +20,7 @@ h1{
 }
 
 .homeTeam, .awayTeam {
-    font-size: 30px;
+    font-size: 25px;
     width: 250px;
     text-align: center;
 }
@@ -37,6 +37,11 @@ h1{
 
 .awayPlayerInfo {
     border: rgb(65, 167, 245) solid;
+}
+
+.homePlaytimeCheckbox, .awayPlaytimeCheckbox{
+    height: 20px;
+    width: 20px;
 }
 
 
