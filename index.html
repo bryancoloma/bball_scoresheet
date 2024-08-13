@@ -20,31 +20,29 @@
         <input type="date" class="gameDate">
     </div>
 
-    <!-- &#160; -->
     <br>
 
     <div class="homeBlock">
-
+<!-- 
         <label for="homeTeam">Home Team: </label>
         <input type="text" class="homeTeam" maxlength="20">
 
         <br>
-        <br>
+        <br> -->
 
         <div class="homeTimeOut">
-            <label class="homeTO1">1st Half Time Out: </label>
+
+            <label class="homeTO1">1st Half TimeOut: </label>
             <input type="checkbox" class="fistHomeTimeOut">
 
             &#160;
-            &#160;
 
-            <label class="homeTO2">2nd Half Time Out: </label>
+            <label class="homeTO2">2nd Half TimeOut: </label>
             <input type="checkbox" class="secondHomeTimeOut" maxlength="5">
-            
-            &#160;
+
             &#160;
 
-            <label class="homeTO2">Overtime - Time Out: </label>
+            <label class="homeOT">Overtime-TimeOut: </label>
             <input type="checkbox" class="overTimeHomeTimeOut" maxlength="5">
         </div>
 
@@ -65,7 +63,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -94,7 +92,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -123,7 +121,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -152,7 +150,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -181,7 +179,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -210,7 +208,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -239,7 +237,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -268,7 +266,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -297,7 +295,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -326,7 +324,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="homeNotes"></td>
                         <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -367,6 +365,11 @@
                         <input type="text" id="homeTotalScore" class="homeScoreBox" readonly>
                         <label for="" class="homeTeamScore">HOME SCORE</label>
 
+                        <br>
+
+                        <label for="homeTeam">Home Team: </label>
+                        <input type="text" class="homeTeam" maxlength="20">
+
                     </div>
                 </div>
 
@@ -381,26 +384,19 @@
 
     <div class="awayBlock">
 
-        <label for="awayTeam">Away Team: </label>
-        <input type="text" class="awayTeam" maxlength="20">
-
-        <br>
-        <br>
-
         <div class="awayTimeOut">
-            <label class="awayTO1">1st Half Time Out: </label>
+
+            <label class="awayTO1">1st Half TimeOut: </label>
             <input type="checkbox" class="fistAwayTimeOut" max="5">
 
             &#160;
-            &#160;
 
-            <label class="awayTO2">2nd Half Time Out: </label>
+            <label class="awayTO2">2nd Half TimeOut: </label>
             <input type="checkbox" class="secondAwayTimeOut" maxlength="5">
 
             &#160;
-            &#160;
 
-            <label class="awayTO2">Overtime - Time Out: </label>
+            <label class="awayOT">Overtime-Time Out: </label>
             <input type="checkbox" class="overTimeAwayTimeOut" maxlength="5">
         </div>
 
@@ -421,7 +417,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -450,7 +446,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -479,7 +475,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -508,7 +504,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -537,7 +533,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -566,7 +562,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -595,7 +591,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -624,7 +620,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -653,7 +649,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -682,7 +678,7 @@
                     </tr>
 
                     <tr>
-                        <td><input type="text"></td>
+                        <td><input type="text" class="awayNotes"></td>
                         <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -722,6 +718,11 @@
 
                         <input type="text" id="awayTotalScore" class="awayScoreBox" readonly>
                         <label for="" class="awayTeamScore">AWAY SCORE</label>
+                        
+                        <br>
+                        
+                        <label for="awayTeam">Away Team: </label>
+                        <input type="text" class="awayTeam" maxlength="20">
 
                     </div>
                 </div>

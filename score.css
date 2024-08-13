@@ -20,8 +20,8 @@ h1{
 }
 
 .homeTeam, .awayTeam {
-    font-size: 25px;
-    width: 250px;
+    font-size: 23px;
+    width: 150px;
     text-align: center;
 }
 
@@ -44,6 +44,10 @@ h1{
     width: 20px;
 }
 
+
+.homeNotes, .awayNotes{
+    width: 115px;
+}
 
 .homeNum, .awayNum {
     text-align: center;
@@ -72,7 +76,7 @@ td {
 }
 
 .homeScore, .awayScore{
-    width: 145px;
+    width: 175px;
     height: 268px;
 }
 
