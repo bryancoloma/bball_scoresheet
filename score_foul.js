@@ -26,20 +26,16 @@ function addTotalHomePoints() {
     document.getElementById('homeTotalScore').value = homeTotalPoints;
 }
 
-//Allow ipad compatibility
-document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('touchstart', function() {
-        this.click();
-    })
-})
-
-
 //Add total home fouls
 function incrementHomeTotalFouls(addHomeFoulsID, homeFoulIncrement) {
     const totalHomeFoulElementAdd = document.getElementById(addHomeFoulsID);
     let currentHomeFoulAdd = parseInt(totalHomeFoulElementAdd.textContent, 10);
     currentHomeFoulAdd += homeFoulIncrement;
+    // cap at 5
+    if (currentHomeFoulAdd > 5) currentHomeFoulAdd = 5;
     totalHomeFoulElementAdd.textContent = currentHomeFoulAdd;
+    // toggle foul-max class when reaching 5
+    toggleFoulMaxClass(totalHomeFoulElementAdd, currentHomeFoulAdd);
     addTotalHomeFouls();
 }
 
@@ -48,7 +44,10 @@ function decrementHomeTotalFouls(subHomeFoulsId, homeFoulDecrement) {
     const totalHomeFoulElementSub = document.getElementById(subHomeFoulsId);
     let currentHomeFoulSub = parseInt(totalHomeFoulElementSub.textContent,10);
     currentHomeFoulSub -= homeFoulDecrement;
+    // prevent negative
+    if (currentHomeFoulSub < 0) currentHomeFoulSub = 0;
     totalHomeFoulElementSub.textContent = currentHomeFoulSub;
+    toggleFoulMaxClass(totalHomeFoulElementSub, currentHomeFoulSub);
     addTotalHomeFouls();
 }
 
@@ -98,7 +97,10 @@ function incrementAwayTotalFouls(addAwayFoulsID, awayFoulIncrement) {
     const totalAwayFoulElementAdd = document.getElementById(addAwayFoulsID);
     let currentAwayFoulAdd = parseInt(totalAwayFoulElementAdd.textContent, 10);
     currentAwayFoulAdd += awayFoulIncrement;
+    // cap at 5
+    if (currentAwayFoulAdd > 5) currentAwayFoulAdd = 5;
     totalAwayFoulElementAdd.textContent = currentAwayFoulAdd;
+    toggleFoulMaxClass(totalAwayFoulElementAdd, currentAwayFoulAdd);
     addTotalAwayFouls();
 }
 
@@ -107,7 +109,10 @@ function decrementAwayTotalFouls(subAwayFoulsId, awayFoulDecrement) {
     const totalAwayFoulElementSub = document.getElementById(subAwayFoulsId);
     let currentAwayFoulSub = parseInt(totalAwayFoulElementSub.textContent,10);
     currentAwayFoulSub -= awayFoulDecrement;
+    // prevent negative
+    if (currentAwayFoulSub < 0) currentAwayFoulSub = 0;
     totalAwayFoulElementSub.textContent = currentAwayFoulSub;
+    toggleFoulMaxClass(totalAwayFoulElementSub, currentAwayFoulSub);
     addTotalAwayFouls();
 }
 
@@ -119,4 +124,14 @@ function addTotalAwayFouls() {
         awayTotalFouls += parseInt(awayFouls.textContent, 10);
     })
     document.getElementById('awayTotalFouls').value = awayTotalFouls;
+}
+
+// Toggle the visual class for fouls at max
+function toggleFoulMaxClass(element, value) {
+    if (!element) return;
+    if (value === 5) {
+        element.classList.add('foul-max');
+    } else {
+        element.classList.remove('foul-max');
+    }
 }

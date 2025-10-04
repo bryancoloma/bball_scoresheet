@@ -62,7 +62,7 @@ h1{
 }
 
 .homeInfoBlock {
-    /* border: black solid; */
+    display: block; /* keep rule non-empty to satisfy linters; harmless default */
 }
 
 h3{
@@ -110,4 +110,10 @@ td {
 
 .awayTeamFouls, .awayTeamScore {
     color: rgb(124, 183, 234);
+}
+
+/* When a player reaches the max fouls, show the number bold and red */
+.foul-max {
+    color: #c82333; /* bootstrap danger red */
+    font-weight: 700;
 }
