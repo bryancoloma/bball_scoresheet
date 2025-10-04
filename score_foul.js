@@ -4,6 +4,8 @@ function incrementHomeTotalPoints(addHomePointsId, homePointIncrement) {
     let currentHomePointAdd = parseInt(totalHomePointElementAdd.textContent, 10);
     currentHomePointAdd += homePointIncrement;
     totalHomePointElementAdd.textContent = currentHomePointAdd;
+    // enable decrement button if we've moved above 0
+    updateScoreDecrementButton(addHomePointsId);
     addTotalHomePoints();
 }
 
@@ -12,7 +14,11 @@ function decrementHomeTotalPoints(subHomePointsId, homePointDecrement) {
     const totalHomePointElementSub = document.getElementById(subHomePointsId);
     let currentHomePointSub = parseInt(totalHomePointElementSub.textContent, 10);
     currentHomePointSub -= homePointDecrement;
+    // prevent negative scores
+    if (currentHomePointSub < 0) currentHomePointSub = 0;
     totalHomePointElementSub.textContent = currentHomePointSub;
+    // disable decrement button if at 0
+    updateScoreDecrementButton(subHomePointsId);
     addTotalHomePoints();
 }
 
@@ -70,6 +76,8 @@ function incrementAwayTotalPoints(addAwayPointsId, awayPointIncrement) {
     let currentAwayPointAdd = parseInt(totalAwayPointElementAdd.textContent, 10);
     currentAwayPointAdd += awayPointIncrement;
     totalAwayPointElementAdd.textContent = currentAwayPointAdd;
+    // enable decrement button if we've moved above 0
+    updateScoreDecrementButton(addAwayPointsId);
     addTotalAwayPoints();
 }
 
@@ -78,7 +86,11 @@ function decrementAwayTotalPoints(subAwayPointsId, awayPointDecrement) {
     const totalAwayPointElementSub = document.getElementById(subAwayPointsId);
     let currentAwayPointSub = parseInt(totalAwayPointElementSub.textContent, 10);
     currentAwayPointSub -= awayPointDecrement;
+    // prevent negative scores
+    if (currentAwayPointSub < 0) currentAwayPointSub = 0;
     totalAwayPointElementSub.textContent = currentAwayPointSub;
+    // disable decrement button if at 0
+    updateScoreDecrementButton(subAwayPointsId);
     addTotalAwayPoints();
 }
 
@@ -135,3 +147,27 @@ function toggleFoulMaxClass(element, value) {
         element.classList.remove('foul-max');
     }
 }
+
+// Enable/disable the decrement button for a score element (prevents negative scores)
+function updateScoreDecrementButton(scoreElementId) {
+    const el = document.getElementById(scoreElementId);
+    if (!el) return;
+    const parent = el.parentElement;
+    if (!parent) return;
+    const decButton = parent.querySelector('button.decrement-button-score');
+    if (!decButton) return;
+    const value = parseInt(el.textContent, 10);
+    decButton.disabled = isNaN(value) || value <= 0;
+}
+
+// Initialize decrement button states on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Home
+    document.querySelectorAll('h3[id^="addHomeTotalPoints"]').forEach(h3 => {
+        updateScoreDecrementButton(h3.id);
+    });
+    // Away
+    document.querySelectorAll('h3[id^="addAwayTotalPoints"]').forEach(h3 => {
+        updateScoreDecrementButton(h3.id);
+    });
+});
