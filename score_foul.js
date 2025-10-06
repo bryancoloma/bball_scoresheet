@@ -42,6 +42,8 @@ function incrementHomeTotalFouls(addHomeFoulsID, homeFoulIncrement) {
     totalHomeFoulElementAdd.textContent = currentHomeFoulAdd;
     // toggle foul-max class when reaching 5
     toggleFoulMaxClass(totalHomeFoulElementAdd, currentHomeFoulAdd);
+    // update foul decrement button state
+    updateFoulDecrementButton(addHomeFoulsID);
     addTotalHomeFouls();
 }
 
@@ -54,6 +56,8 @@ function decrementHomeTotalFouls(subHomeFoulsId, homeFoulDecrement) {
     if (currentHomeFoulSub < 0) currentHomeFoulSub = 0;
     totalHomeFoulElementSub.textContent = currentHomeFoulSub;
     toggleFoulMaxClass(totalHomeFoulElementSub, currentHomeFoulSub);
+    // update foul decrement button state
+    updateFoulDecrementButton(subHomeFoulsId);
     addTotalHomeFouls();
 }
 
@@ -113,6 +117,8 @@ function incrementAwayTotalFouls(addAwayFoulsID, awayFoulIncrement) {
     if (currentAwayFoulAdd > 5) currentAwayFoulAdd = 5;
     totalAwayFoulElementAdd.textContent = currentAwayFoulAdd;
     toggleFoulMaxClass(totalAwayFoulElementAdd, currentAwayFoulAdd);
+    // update foul decrement button state
+    updateFoulDecrementButton(addAwayFoulsID);
     addTotalAwayFouls();
 }
 
@@ -125,6 +131,8 @@ function decrementAwayTotalFouls(subAwayFoulsId, awayFoulDecrement) {
     if (currentAwayFoulSub < 0) currentAwayFoulSub = 0;
     totalAwayFoulElementSub.textContent = currentAwayFoulSub;
     toggleFoulMaxClass(totalAwayFoulElementSub, currentAwayFoulSub);
+    // update foul decrement button state
+    updateFoulDecrementButton(subAwayFoulsId);
     addTotalAwayFouls();
 }
 
@@ -160,8 +168,23 @@ function updateScoreDecrementButton(scoreElementId) {
     decBtn.disabled = isNaN(val) || val <= 0;
 }
 
+// Disable/enable decrement buttons for foul h3 elements
+function updateFoulDecrementButton(foulElementId) {
+    const el = document.getElementById(foulElementId);
+    if (!el) return;
+    const row = el.closest('td') || el.parentElement;
+    if (!row) return;
+    const decBtn = row.querySelector('button.decrement-button-foul');
+    if (!decBtn) return;
+    const val = parseInt(el.textContent, 10);
+    decBtn.disabled = isNaN(val) || val <= 0;
+}
+
 // Initialize decrement button states when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('h3[id^="addHomeTotalPoints"]').forEach(h3 => updateScoreDecrementButton(h3.id));
     document.querySelectorAll('h3[id^="addAwayTotalPoints"]').forEach(h3 => updateScoreDecrementButton(h3.id));
+    // initialize foul decrement buttons
+    document.querySelectorAll('h3[id^="addHomeTotalFouls"]').forEach(h3 => updateFoulDecrementButton(h3.id));
+    document.querySelectorAll('h3[id^="addAwayTotalFouls"]').forEach(h3 => updateFoulDecrementButton(h3.id));
 });
