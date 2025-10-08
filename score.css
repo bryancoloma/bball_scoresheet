@@ -25,12 +25,10 @@ h1{
     text-align: center;
 }
 
-.fistHomeTimeOut, .secondHomeTimeOut, .overTimeHomeTimeOut,
-.fistAwayTimeOut, .secondAwayTimeOut, .overTimeAwayTimeOut{
-    width: 28px;
-    height: 18px;
+.fistHomeTimeOut, .secondHomeTimeOut, .overTimeHomeTimeOut, .fistAwayTimeOut, .secondAwayTimeOut, .overTimeAwayTimeOut{
+    width: 50px;
+    height: 30px;
     text-align: center;
-    vertical-align: middle;
 }
 
 .homePlayerInfo {
@@ -118,4 +116,10 @@ td {
 .foul-max {
     color: #c82333; /* bootstrap danger red */
     font-weight: 700;
+}
+
+/* Make foul decrement disabled buttons visibly greyed */
+button.decrement-button-foul:disabled {
+    opacity: 0.45;
+    cursor: default;
 }
