@@ -15,7 +15,7 @@
 
     <div class="gameDay_info">
         <label class="gameTime">TIME:</label>
-        <input type="time" class="gameTime">
+        <input type="time" class="gameTime" step="60">
         <label class="gameDate">DATE:</label>
         <input type="date" class="gameDate">
     </div>
@@ -64,7 +64,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -93,7 +93,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -122,7 +122,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -151,7 +151,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -180,7 +180,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -209,7 +209,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -238,7 +238,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -267,7 +267,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -296,7 +296,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -325,7 +325,7 @@
 
                     <tr>
                         <td><input type="text" class="homeNotes"></td>
-                        <td><input type="text" class="homeNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="homeNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="homePlaytimeCheckbox">
                             <input type="checkbox" class="homePlaytimeCheckbox">
@@ -418,7 +418,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -447,7 +447,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -476,7 +476,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -505,7 +505,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -534,7 +534,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -563,7 +563,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -592,7 +592,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -621,7 +621,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -650,7 +650,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">
@@ -679,7 +679,7 @@
 
                     <tr>
                         <td><input type="text" class="awayNotes"></td>
-                        <td><input type="text" class="awayNum" size="3" maxlength="2"></td>
+                        <td><input type="text" class="awayNum" size="3" maxlength="2" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '')"></td>
                         <td>
                             <input type="checkbox" class="awayPlaytimeCheckbox">
                             <input type="checkbox" class="awayPlaytimeCheckbox">

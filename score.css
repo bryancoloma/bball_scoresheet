@@ -128,3 +128,122 @@ button.decrement-button-foul:disabled {
     opacity: 0.45;
     cursor: default;
 }
+
+/* ---------- Print: fit the whole sheet on one 8.5x11 portrait page ---------- */
+@page {
+    size: letter portrait;
+    margin: 0.25in;
+}
+
+@media print {
+    body {
+        margin: 0;
+        font-size: 12px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin: 0 0 4px;
+    }
+
+    .gameDay_info,
+    .homeTimeOut,
+    .awayTimeOut {
+        margin: 2px 0;
+    }
+
+    /* drop the spacer line breaks between sections */
+    .homeBlock > br,
+    .awayBlock > br,
+    body > br {
+        display: none;
+    }
+
+    .awayBlock {
+        margin-top: 10px;
+    }
+
+    /* +1 / -1 buttons do nothing on paper */
+    .increment-button-score,
+    .decrement-button-score,
+    .increment-button-foul,
+    .decrement-button-foul {
+        display: none;
+    }
+
+    /* player table and score boxes side by side */
+    .homeInfoBlock,
+    .awayInfoBlock {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .homePlayerInfo,
+    .awayPlayerInfo {
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 5px 6px;
+    }
+
+    th {
+        font-size: 12px;
+    }
+
+    .homeNotes,
+    .awayNotes {
+        width: 170px;
+    }
+
+    .homeNum,
+    .awayNum {
+        font-size: 14px;
+    }
+
+    h3 {
+        font-size: 14px;
+    }
+
+    .homePlaytimeCheckbox,
+    .awayPlaytimeCheckbox {
+        width: 18px;
+        height: 18px;
+        margin: 2px;
+    }
+
+    .homeScore,
+    .awayScore {
+        width: auto;
+        height: auto;
+    }
+
+    .scoreBox {
+        padding-top: 0;
+    }
+
+    .homeScoreBox,
+    .awayScoreBox {
+        width: 90px;
+        height: 60px;
+        font-size: 48px;
+    }
+
+    .homeFoulBox,
+    .awayFoulBox {
+        width: 60px;
+        height: 40px;
+        font-size: 28px;
+    }
+
+    .homeTeam,
+    .awayTeam {
+        font-size: 16px;
+        width: 130px;
+    }
+}
