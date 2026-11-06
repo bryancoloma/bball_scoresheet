@@ -155,13 +155,18 @@ button.decrement-button-foul:disabled {
 
     h1 {
         font-size: 20px;
-        margin: 0 0 4px;
+        margin: 0 0 18px;
     }
 
     .gameDay_info,
     .homeTimeOut,
     .awayTimeOut {
         margin: 2px 0;
+    }
+
+    /* extra room between the time/date row and the 1st half timeouts */
+    .gameDay_info {
+        margin-bottom: 36px;
     }
 
     /* drop the spacer line breaks between sections */
