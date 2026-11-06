@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="team.css">
+    <title>Team Page</title>
+</head>
+<body>
+
+    <nav class="teamNav">
+        <a href="index.html">&larr; Scoresheet</a>
+    </nav>
+
+    <!--
+        Placeholder team page.
+        Open it for a specific team with: team.html?team=Team%20Name
+        When team logins are added, the login should send each team here
+        with its own name (or ID) in the URL.
+    -->
+
+    <h1 id="teamName">Team</h1>
+
+    <section class="teamSection">
+        <h2>Roster</h2>
+        <p class="placeholder">Coming soon.</p>
+    </section>
+
+    <section class="teamSection">
+        <h2>Schedule</h2>
+        <p class="placeholder">Coming soon.</p>
+    </section>
+
+    <section class="teamSection">
+        <h2>Past Games</h2>
+        <p class="placeholder">Coming soon.</p>
+    </section>
+
+    <script>
+        // Show the team name passed in the URL, e.g. team.html?team=Shepherd
+        const team = new URLSearchParams(window.location.search).get('team');
+        if (team) {
+            document.getElementById('teamName').textContent = team;
+            document.title = team + ' - Team Page';
+        }
+    </script>
+
+</body>
+</html>

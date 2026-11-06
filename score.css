@@ -2,6 +2,16 @@ h1{
     text-align: center;
 }
 
+.pageNav {
+    text-align: right;
+}
+
+.pageNav a {
+    color: rgb(53, 50, 222);
+    text-decoration: none;
+    font-size: 18px;
+}
+
 .gameDay_info{
     text-align: center;
     color: rgb(53, 50, 222);
@@ -163,6 +173,11 @@ button.decrement-button-foul:disabled {
 
     .awayBlock {
         margin-top: 10px;
+    }
+
+    /* links aren't useful on paper */
+    .pageNav {
+        display: none;
     }
 
     /* +1 / -1 buttons do nothing on paper */
