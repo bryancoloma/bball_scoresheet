@@ -1,0 +1,31 @@
+body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.teamNav a {
+    color: rgb(53, 50, 222);
+    text-decoration: none;
+    font-size: 18px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.teamSection {
+    border: rgb(65, 167, 245) solid;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+}
+
+.teamSection h2 {
+    color: rgb(33, 100, 201);
+    margin: 4px 0 8px;
+}
+
+.placeholder {
+    color: gray;
+    font-style: italic;
+}
