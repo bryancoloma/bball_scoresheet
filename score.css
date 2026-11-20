@@ -1,20 +1,164 @@
-h1{
-    text-align: center;
+/* ---------- Colors and fonts: same palette as the team page (css/stats.css) ---------- */
+:root {
+    --bg: #f3f6fb;
+    --surface: #ffffff;
+    --ink: #14213d;
+    --muted: #5b6b85;
+    --line: #d6e0ee;
+    --court: #2164c9;        /* home blue */
+    --court-soft: #e3edfb;
+    --away: #41a7f5;         /* away blue */
+    --display: "Oswald", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0e1626; --surface: #16213a; --ink: #e8eef8; --muted: #9aabc6; --line: #2a3a58;
+        --court: #6ea6f5; --court-soft: #1d3157; --away: #7cc4f8; color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0e1626; --surface: #16213a; --ink: #e8eef8; --muted: #9aabc6; --line: #2a3a58;
+    --court: #6ea6f5; --court-soft: #1d3157; --away: #7cc4f8; color-scheme: dark;
 }
 
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+}
+
+input, select {
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+}
+
+/* Player table cells and headers */
+.homePlayerInfo, .awayPlayerInfo {
+    background: var(--surface);
+    border-collapse: collapse;
+}
+.homePlayerInfo th, .homePlayerInfo td,
+.awayPlayerInfo th, .awayPlayerInfo td {
+    border: 1px solid var(--line);
+}
+.homePlayerInfo th, .awayPlayerInfo th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    padding: 6px 8px;
+}
+
+/* +1 / -1 buttons */
+.increment-button-score, .decrement-button-score,
+.increment-button-foul, .decrement-button-foul {
+    font-family: inherit;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--court-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+/* Team picker + "type a team name" box, kept together under the score */
+.teamPickBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.teamPickBox [hidden] { display: none; }
+select.homeTeam, select.awayTeam {
+    font-size: 17px;
+    width: 175px;
+}
+
+h1{
+    text-align: center;
+    font-family: var(--display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Links sit centered under the title */
 .pageNav {
-    text-align: right;
+    text-align: center;
+    margin: -8px 0 16px;
 }
 
 .pageNav a {
-    color: rgb(53, 50, 222);
+    color: var(--court);
+    font-weight: 600;
     text-decoration: none;
     font-size: 18px;
+    margin: 0 10px;
+}
+
+/* ---------- Save game button and confirm box ---------- */
+.saveBar {
+    text-align: center;
+    margin: 24px 0 40px;
+}
+.saveGameBtn {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    background: var(--court);
+    border: 0;
+    border-radius: 8px;
+    padding: 14px 36px;   /* big target for fingers on an iPad */
+    cursor: pointer;
+}
+.saveGameBtn:disabled { opacity: 0.5; cursor: default; }
+.saveSecondary {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--court);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 24px;
+    cursor: pointer;
+}
+.saveDialog {
+    width: min(560px, calc(100vw - 32px));
+    max-height: 85vh;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+.saveDialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.saveDialog h2 { font-family: var(--display); text-transform: uppercase; margin: 0 0 12px; }
+.saveDialog h3 { margin: 16px 0 4px; color: var(--court); }
+.saveDialog ul { margin: 4px 0; padding-left: 20px; }
+.saveDialog .muted { color: var(--muted); }
+.saveDialog a { color: var(--court); font-weight: 600; }
+.saveScore { font-size: 22px; margin: 0; }
+.saveNotes { color: #b45309; }
+.saveActions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
+
+.signInHint {
+    text-align: center;
+    color: var(--muted);
+    margin: -8px 0 12px;
 }
 
 .gameDay_info{
     text-align: center;
-    color: rgb(53, 50, 222);
+    color: var(--court);
+    font-weight: 600;
 }
 
 .gameDate, .gameTime {
@@ -47,11 +191,11 @@ h1{
 }
 
 .homePlayerInfo {
-    border: rgb(216, 233, 254) solid;
+    border: var(--court) solid;
 }
 
 .awayPlayerInfo {
-    border: rgb(65, 167, 245) solid;
+    border: var(--away) solid;
 }
 
 .homePlaytimeCheckbox, .awayPlaytimeCheckbox{
@@ -66,7 +210,8 @@ h1{
 
 .homeNum, .awayNum {
     text-align: center;
-    color: green;
+    color: var(--court);
+    font-weight: 700;
     font-size: 18px;
 }
 
@@ -92,11 +237,12 @@ td {
 
 .homeScore, .awayScore{
     width: 175px;
-    height: 268px;
+    min-height: 268px; /* min so the "type a team name" box has room */
 }
 
 .homeScoreBox, .awayScoreBox{
-    border: black solid;
+    border: var(--ink) solid;
+    font-family: var(--display);
     width: 100px;
     height: 75px;
     text-align: center;
@@ -104,7 +250,8 @@ td {
 }
 
 .homeFoulBox, .awayFoulBox {
-    border: black solid;
+    border: var(--ink) solid;
+    font-family: var(--display);
     width: 70px;
     height: 50px;
     text-align: center;
@@ -120,11 +267,17 @@ td {
 }
 
 .homeTeamFouls, .homeTeamScore {
-    color: rgb(33, 100, 201);
+    color: var(--court);
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: 0.05em;
 }
 
 .awayTeamFouls, .awayTeamScore {
-    color: rgb(124, 183, 234);
+    color: var(--away);
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: 0.05em;
 }
 
 /* When a player reaches the max fouls, show the number bold and red */
@@ -146,6 +299,26 @@ button.decrement-button-foul:disabled {
 }
 
 @media print {
+    /* Paper is always white with dark ink, even if the iPad is in dark mode. */
+    :root {
+        --bg: #ffffff; --surface: #ffffff; --ink: #000000; --muted: #333333; --line: #999999;
+        --court: #2164c9; --court-soft: #ffffff; --away: #41a7f5;
+    }
+
+    /* Drop-downs print as plain text: no arrow, no box. */
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+        border: none;
+        background: transparent;
+        text-align: center;
+    }
+    /* Unpicked rows print blank, and "Other team" doesn't print (the typed name does). */
+    select.playerPick:has(option[value=""]:checked) { color: transparent; }
+    select.teamPick:has(option[value=""]:checked) { display: none; }
+    /* Gray hint text ("Team name") shouldn't print on an empty box. */
+    ::placeholder { color: transparent; }
+
     body {
         margin: 0;
         font-size: 12px;
@@ -180,7 +353,9 @@ button.decrement-button-foul:disabled {
         margin-top: 10px;
     }
 
-    /* links aren't useful on paper */
+    /* links and the save button aren't useful on paper */
+    .saveBar,
+    .signInHint,
     .pageNav {
         display: none;
     }

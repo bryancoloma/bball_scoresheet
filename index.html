@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="score.css">
     <title>Shepherd Score Sheet</title>
     <script src="score_foul.js">
@@ -11,11 +14,12 @@
 </head>
 <body>
 
+    <h1>Shepherd Sports Scoresheet</h1>
+
     <nav class="pageNav">
+        <a href="roster.html">Rosters</a>
         <a href="team.html">Team Page &rarr;</a>
     </nav>
-
-    <h1>Shepherd Sports Scoresheet</h1>
 
     <div class="gameDay_info">
         <label class="gameTime">TIME:</label>
@@ -371,8 +375,15 @@
 
                         <br>
 
-                        <label for="homeTeam">Home Team: </label>
-                        <input type="text" class="homeTeam" maxlength="20">
+                        <label for="homeTeamPick">Home Team: </label>
+                        <!-- Picking a team turns player rows 1-8 into roster drop-downs (js/scoresheet.js).
+                             The text box is for a team that isn't in the list. -->
+                        <div class="teamPickBox">
+                            <select id="homeTeamPick" class="homeTeam teamPick">
+                                <option value="">Other team</option>
+                            </select>
+                            <input type="text" class="homeTeam" maxlength="20" aria-label="Home team name" placeholder="Team name">
+                        </div>
 
                     </div>
                 </div>
@@ -725,8 +736,15 @@
                         
                         <br>
                         
-                        <label for="awayTeam">Away Team: </label>
-                        <input type="text" class="awayTeam" maxlength="20">
+                        <label for="awayTeamPick">Away Team: </label>
+                        <!-- Picking a team turns player rows 1-8 into roster drop-downs (js/scoresheet.js).
+                             The text box is for a team that isn't in the list. -->
+                        <div class="teamPickBox">
+                            <select id="awayTeamPick" class="awayTeam teamPick">
+                                <option value="">Other team</option>
+                            </select>
+                            <input type="text" class="awayTeam" maxlength="20" aria-label="Away team name" placeholder="Team name">
+                        </div>
 
                     </div>
                 </div>
@@ -737,6 +755,22 @@
         </div>
 
     </div>
-    
+
+    <!-- Save the whole sheet to the database (js/savegame.js). Asks to confirm first. -->
+    <div class="saveBar">
+        <button type="button" id="saveGameBtn" class="saveGameBtn">Save game</button>
+    </div>
+
+    <dialog id="saveDialog" class="saveDialog" aria-labelledby="saveTitle">
+        <h2 id="saveTitle">Save game</h2>
+        <div class="saveBody"></div>
+        <div class="saveActions">
+            <button type="button" id="saveCancel" class="saveSecondary">Cancel</button>
+            <button type="button" id="saveConfirm" class="saveGameBtn">Yes, save game</button>
+        </div>
+    </dialog>
+
+    <script type="module" src="js/scoresheet.js"></script>
+    <script type="module" src="js/savegame.js"></script>
 </body>
 </html>

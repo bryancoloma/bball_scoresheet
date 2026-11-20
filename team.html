@@ -3,47 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="team.css">
     <title>Team Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="css/stats.css">
 </head>
 <body>
-
-    <nav class="teamNav">
-        <a href="index.html">&larr; Scoresheet</a>
-    </nav>
-
     <!--
-        Placeholder team page.
-        Open it for a specific team with: team.html?team=Team%20Name
-        When team logins are added, the login should send each team here
-        with its own name (or ID) in the URL.
+        Team roster and recent games, loaded from Supabase.
+        Open a specific team with: team.html?team=<team slug>
+        With no ?team=, the first team in the database is shown.
     -->
+    <div class="wrap">
+        <nav class="top-nav"><a href="index.html">&larr; Scoresheet</a></nav>
+        <main id="app" class="wrap" style="padding:0" aria-live="polite"><p class="muted">Loading&hellip;</p></main>
+    </div>
 
-    <h1 id="teamName">Team</h1>
+    <script type="module">
+        import { isConfigured, getMyAccess, getGames, getRoster } from "./js/data.js";
+        import { esc, avg, fullName, shortDate, resultCell, recordText, thumb, showMessage, signInPrompt } from "./js/render.js";
 
-    <section class="teamSection">
-        <h2>Roster</h2>
-        <p class="placeholder">Coming soon.</p>
-    </section>
+        const app = document.getElementById("app");
 
-    <section class="teamSection">
-        <h2>Schedule</h2>
-        <p class="placeholder">Coming soon.</p>
-    </section>
-
-    <section class="teamSection">
-        <h2>Past Games</h2>
-        <p class="placeholder">Coming soon.</p>
-    </section>
-
-    <script>
-        // Show the team name passed in the URL, e.g. team.html?team=Shepherd
-        const team = new URLSearchParams(window.location.search).get('team');
-        if (team) {
-            document.getElementById('teamName').textContent = team;
-            document.title = team + ' - Team Page';
+        function rosterRow(p, team) {
+            const s = p.season;
+            return `<tr>
+                <td class="jersey-cell">${esc(p.jersey)}</td>
+                <td>
+                    <div class="player-cell">
+                        ${thumb(p, team)}
+                        <div>
+                            <a class="player-name" href="player.html?id=${encodeURIComponent(p.slug)}">${esc(fullName(p))}</a>
+                            <span class="player-sub">${esc(p.position)} &middot; ${esc(p.grade)} grade</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="num">${s.games}</td>
+                <td class="num">${avg(s.points, s.games)}</td>
+                <td class="num">${avg(s.fouls, s.games)}</td>
+                <td class="num">${avg(s.periods, s.games)}</td>
+                <td class="num">${s.points}</td>
+            </tr>`;
         }
-    </script>
 
+        async function main() {
+            if (!isConfigured) {
+                return showMessage(app, "Not connected yet", "Add the Supabase URL and publishable key to js/config.js.");
+            }
+            // Admin: every team. Coach: only their own. The database enforces the same rule.
+            const access = await getMyAccess();
+            if (!access.user) return signInPrompt(app);
+            if (!access.teams.length) {
+                return showMessage(app, "Waiting for approval", "The admin needs to approve your account and link it to your team.");
+            }
+            const slug = new URLSearchParams(location.search).get("team");
+            const team = slug ? access.teams.find(t => t.slug === slug) : access.teams[0];
+            if (!team) return showMessage(app, "No access to that team", "You can only view your own team.");
+
+            const [roster, record] = await Promise.all([getRoster(team.id), getGames(team.id)]);
+
+            // Team drop-down when there's more than one team to choose from (always for an admin).
+            const picker = access.teams.length > 1 ? `
+                <label class="team-pick">${access.isAdmin ? "All teams" : "Your teams"}
+                    <select id="team-picker">${access.teams.map(t =>
+                        `<option value="${esc(t.slug)}"${t.id === team.id ? " selected" : ""}>${esc(t.name)} (${esc(t.season)})</option>`).join("")}
+                    </select>
+                </label>` : "";
+            roster.sort((a, b) => b.season.points - a.season.points);
+            const teamPts = record.games.reduce((sum, g) => sum + (g.team_score ?? 0), 0);
+
+            document.title = `${team.name} Team Page`;
+            app.innerHTML = `
+                ${picker}
+                <div class="team-head">
+                    <div>
+                        <p class="eyebrow">${esc(team.org)} &middot; ${esc(team.season)} season</p>
+                        <h1>${esc(team.name)}</h1>
+                    </div>
+                    <div class="team-stats">
+                        <div class="chip"><span class="value">${recordText(record)}</span><span class="label">Record</span></div>
+                        <div class="chip"><span class="value">${avg(teamPts, record.games.length)}</span><span class="label">Points / game</span></div>
+                        <div class="chip"><span class="value">${roster.length}</span><span class="label">Players</span></div>
+                    </div>
+                </div>
+
+                <section class="panel" aria-label="Roster">
+                    <h2>Roster</h2>
+                    <div class="table-scroll">
+                        <table class="data roster">
+                            <thead><tr>
+                                <th>#</th><th>Player</th>
+                                <th class="num">Games</th><th class="num">Pts / G</th><th class="num">Fouls / G</th>
+                                <th class="num">Periods / G</th><th class="num">Total pts</th>
+                            </tr></thead>
+                            <tbody>${roster.map(p => rosterRow(p, team)).join("")}</tbody>
+                        </table>
+                    </div>
+                    <p class="muted">Click a name to open the player's stats, or the small card to see their player card.</p>
+                </section>
+
+                <section class="panel" aria-label="Recent games">
+                    <h2>Recent games</h2>
+                    <div class="table-scroll">
+                        <table class="data">
+                            <thead><tr><th>Date</th><th>Opponent</th><th>Result</th></tr></thead>
+                            <tbody>${record.games.map(g => `<tr><td>${shortDate(g.game_date)}</td><td>${esc(g.opponent)}</td>${resultCell(g)}</tr>`).join("") ||
+                                `<tr><td colspan="3" class="muted">No games yet.</td></tr>`}</tbody>
+                        </table>
+                    </div>
+                </section>`;
+
+            // Switching teams reloads the page for that team, so the link can be shared or bookmarked.
+            document.getElementById("team-picker")?.addEventListener("change", e => {
+                location.search = "?team=" + encodeURIComponent(e.target.value);
+            });
+        }
+
+        main().catch(err => {
+            console.error(err);
+            showMessage(app, "Couldn't load the team", "Please try again in a moment.");
+        });
+    </script>
 </body>
 </html>
