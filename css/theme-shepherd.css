@@ -1,0 +1,57 @@
+/* Shepherd Sports colors: navy #131B2B and orange #EF931D, from their website.
+   Loaded after score.css / stats.css on every page, so these colors win in both
+   light and dark mode. Printing still uses white paper (score.css @media print). */
+:root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
+  --brand-orange: #ef931d;
+  --brand-navy: #131b2b;
+
+  --bg: #131b2b;
+  --surface: #1c2638;
+  --ink: #f3f5f9;
+  --muted: #a3adbf;
+  --line: #2f3b52;
+  --court: #ef931d;        /* home / accent: Shepherd orange */
+  --court-soft: #3a2b17;
+  --away: #c9d3e3;         /* away: light steel, reads clearly next to orange */
+  --row-hover: #222d42;
+  --photo-bg: #222d42;
+  --photo-fg: #4a5874;
+
+  --card-navy: #131b2b;
+  --card-blue: #2a3954;
+  --card-gold: #ef931d;
+  color-scheme: dark;
+}
+
+/* Their site: thin orange bar across the top, then navy. */
+body { border-top: 10px solid var(--brand-orange); }
+
+/* White, uppercase nav like their menu (ADULT SPORTS, YOUTH SPORTS ...). */
+.pageNav a, .top-nav a {
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.pageNav a:hover, .top-nav a:hover { color: var(--brand-orange); }
+
+h1 { color: #ffffff; }
+/* Orange buttons get navy text (white on orange is hard to read). */
+.saveGameBtn, .button, .button-link { color: var(--brand-navy); }
+.button.ghost { color: var(--brand-orange); }
+
+/* Ticked boxes in Shepherd orange instead of the browser's blue. */
+input[type="checkbox"] { accent-color: var(--brand-orange); }
+/* Card name band fades to Shepherd navy (was a fixed blue). */
+.front .nameplate { background: linear-gradient(180deg, rgba(19, 27, 43, 0) 0%, rgba(19, 27, 43, 0.92) 38%, var(--card-navy) 100%); }
+
+/* Paper: no orange stripe (it pushes the scoresheet onto a 2nd page). */
+@media print {
+  /* Shepherd colors on white paper: darker orange for Home (easier to read in
+     print), navy for Away. Wins over score.css's print colors (loaded later). */
+  :root { --court: #c96f00 !important; --away: #131b2b !important; --court-soft: #ffffff !important; }
+  input[type="checkbox"] { accent-color: #c96f00; }
+  body { border-top: 0; }
+  h1 { color: #000000; }
+  .pageNav a, .top-nav a { color: #000000; }
+}

@@ -395,7 +395,7 @@ button.decrement-button-foul:disabled {
     }
     /* Unpicked players and teams print blank (room to write in by hand). */
     select.playerPick:has(option[value=""]:checked),
-    select.teamPick:has(option[value=""]:checked) { color: transparent; }
+    select.teamPick:has(option[value=""]:checked) { color: transparent; -webkit-text-fill-color: transparent; }
     /* Gray hint text ("Team name") shouldn't print on an empty box. */
     ::placeholder { color: transparent; }
 
