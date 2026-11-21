@@ -273,7 +273,12 @@ app.addEventListener("submit", async e => {
       const { data, error } = await db.auth.signUp({
         email: form.email.value.trim(),
         password: form.password.value,
-        options: { data: { full_name: form.full_name.value.trim(), phone: form.phone.value.trim() } },
+        options: {
+          data: { full_name: form.full_name.value.trim(), phone: form.phone.value.trim() },
+          // If Supabase sends a "confirm your email" link, it comes back to this
+          // sign-in page (not the bare site address, which has no page).
+          emailRedirectTo: location.origin + location.pathname,
+        },
       });
       if (error) return setStatus(friendlyError(error), true);
       // With "Confirm email" off in Supabase, sign-up signs you straight in.
