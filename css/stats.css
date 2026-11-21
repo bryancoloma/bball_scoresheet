@@ -1,0 +1,271 @@
+/* Shared styles for team.html, player.html and card.html (from the customer samples). */
+:root {
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --ink: #14213d;
+  --muted: #5b6b85;
+  --line: #d6e0ee;
+  --court: #2164c9;          /* Shepherd home blue from the scoresheet */
+  --court-soft: #e3edfb;
+  --photo-bg: #dde6f3;
+  --photo-fg: #9fb2cc;
+  --row-hover: #f0f5fd;
+  /* card colors are fixed: the card is a printed object and looks the same in both themes */
+  --card-navy: #0f2a5c;
+  --card-blue: #2164c9;
+  --card-gold: #f2b631;
+  --card-paper: #f7f4ec;
+  --card-ink: #14213d;
+  --card-muted: #5b6b85;
+  --card-stripe: #ebe6d8;
+  --card-white: #ffffff;
+  --display: "Oswald", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1626; --surface: #16213a; --ink: #e8eef8; --muted: #9aabc6; --line: #2a3a58;
+    --court: #6ea6f5; --court-soft: #1d3157; --photo-bg: #22314f; --photo-fg: #4b6290;
+    --row-hover: #1b2843; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1626; --surface: #16213a; --ink: #e8eef8; --muted: #9aabc6; --line: #2a3a58;
+  --court: #6ea6f5; --court-soft: #1d3157; --photo-bg: #22314f; --photo-fg: #4b6290;
+  --row-hover: #1b2843; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: grid;
+  gap: 20px;
+}
+.eyebrow {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+.muted { color: var(--muted); margin: 0; }
+h1, h2 { font-family: var(--display); font-weight: 600; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 5vw, 42px); line-height: 1.05; }
+h2 { font-size: 22px; letter-spacing: 0.02em; }
+a { color: var(--court); }
+a:focus-visible { outline: 3px solid var(--court); outline-offset: 2px; border-radius: 4px; }
+
+.top-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.top-nav a { font-weight: 600; text-decoration: none; }
+.top-nav a:hover { text-decoration: underline; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: grid;
+  gap: 14px;
+}
+
+/* ---------- team header ---------- */
+.team-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; }
+.team-stats { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { background: var(--court-soft); border-radius: 8px; padding: 8px 14px; display: grid; min-width: 92px; }
+.chip .value { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.chip .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+/* ---------- tables ---------- */
+.table-scroll { overflow-x: auto; }
+table.data { color: var(--ink); width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.data th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+table.data .num { text-align: right; }
+table.data tbody tr:hover { background: var(--row-hover); }
+.roster { min-width: 640px; }
+.log { min-width: 480px; }
+
+.player-cell { display: flex; align-items: center; gap: 12px; }
+.player-name { font-weight: 700; font-size: 16px; text-decoration: none; }
+.player-name:hover { text-decoration: underline; }
+.player-sub { display: block; color: var(--muted); font-size: 13px; }
+.jersey-cell { font-family: var(--display); font-weight: 600; font-size: 20px; color: var(--court); }
+
+.thumb { display: block; flex: none; border-radius: 4px; text-decoration: none; transition: transform 0.15s ease; }
+.thumb:hover { transform: translateY(-2px) rotate(-2deg); }
+.thumb .card { font-size: 2.3px; box-shadow: 0 2px 6px rgba(15, 42, 92, 0.3); }
+
+.result { font-weight: 700; }
+.result.w { color: var(--court); }
+.result.l { color: var(--muted); }
+.quarters { display: inline-flex; gap: 3px; vertical-align: middle; }
+.quarters span { width: 12px; height: 12px; border-radius: 2px; border: 1.5px solid var(--court); }
+.quarters span.on { background: var(--court); }
+
+/* ---------- profile ---------- */
+.profile { grid-template-columns: minmax(160px, 240px) 1fr; gap: 24px; align-items: start; }
+.photo {
+  aspect-ratio: 4 / 5; max-width: 100%;
+  background: var(--photo-bg); border-radius: 8px;
+  display: grid; place-items: center; overflow: hidden; position: relative;
+}
+.photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; display: block; }
+.photo svg { width: 70%; height: auto; }
+.photo svg path, .photo svg circle { fill: var(--photo-fg); }
+.photo-label {
+  position: absolute; bottom: 10px; left: 0; right: 0; text-align: center;
+  font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+}
+.info { min-width: 0; display: grid; gap: 16px; }
+.name-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.jersey { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1; color: var(--court); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 15px; margin: 0; padding: 0; list-style: none; }
+.meta b { color: var(--ink); font-weight: 600; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--court-soft); border-radius: 8px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat .value { font-family: var(--display); font-weight: 600; font-size: 32px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.totals { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; color: var(--muted); margin: 0; }
+.totals b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.profile-actions .thumb .card { font-size: 3px; }
+.button-link {
+  display: inline-block; background: var(--court); color: var(--surface);
+  font-weight: 700; text-decoration: none; padding: 8px 14px; border-radius: 6px;
+}
+.button-link:hover { filter: brightness(1.08); }
+
+/* ---------- card page ---------- */
+.sheet { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; }
+.side { display: grid; gap: 8px; justify-items: center; }
+.side-label { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 13px; color: var(--muted); }
+.print-tip { color: var(--muted); font-size: 14px; text-align: center; margin: 0; }
+
+/* ---------- the card (sized in em: 25em x 35em) ---------- */
+.card {
+  font-size: 13px; width: 25em; height: 35em; max-width: 100%;
+  border-radius: 1em; overflow: hidden; position: relative;
+  box-shadow: 0 6px 20px rgba(15, 42, 92, 0.25);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.front { background: var(--card-navy); border: 0.9em solid var(--card-gold); }
+.front .pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
+.front .no-pic { position: absolute; inset: 0; background: linear-gradient(160deg, var(--card-blue), var(--card-navy) 70%); display: grid; place-items: center; }
+.front .no-pic svg { width: 62%; margin-bottom: 6em; }
+.front .no-pic path, .front .no-pic circle { fill: rgba(255, 255, 255, 0.18); }
+.front .team-tag {
+  position: absolute; top: 1em; left: 1em; background: var(--card-navy); color: var(--card-gold);
+  font-family: var(--display); font-weight: 600; font-size: 1.05em; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 0.3em 0.7em; border-radius: 0.3em;
+}
+.front .number {
+  position: absolute; top: 0.5em; right: 0.6em; font-family: var(--display); font-weight: 700;
+  font-size: 4em; line-height: 1; color: var(--card-white); text-shadow: 0 0.05em 0.15em rgba(0, 0, 0, 0.55);
+}
+.front .nameplate {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(15, 42, 92, 0) 0%, rgba(15, 42, 92, 0.92) 38%, var(--card-navy) 100%);
+  padding: 3em 1.1em 1em; color: var(--card-white);
+}
+.front .first { font-family: var(--display); font-weight: 500; font-size: 1.4em; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; color: var(--card-gold); }
+.front .last { font-family: var(--display); font-weight: 700; font-size: 3em; text-transform: uppercase; line-height: 1; }
+.front .pos { font-weight: 600; font-size: 1em; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.35em; opacity: 0.9; }
+.back { background: var(--card-paper); color: var(--card-ink); border: 0.9em solid var(--card-navy); display: flex; flex-direction: column; }
+.back .head { background: var(--card-blue); color: var(--card-white); padding: 0.8em 1em; display: flex; align-items: center; justify-content: space-between; gap: 0.6em; }
+.back .head .name { font-family: var(--display); font-weight: 700; font-size: 1.7em; text-transform: uppercase; line-height: 1.05; }
+.back .head .num { font-family: var(--display); font-weight: 700; font-size: 2.2em; color: var(--card-gold); line-height: 1; }
+.back .body { padding: 0.8em 1em 0.9em; display: flex; flex-direction: column; gap: 0.75em; flex: 1; }
+.back .bio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4em; font-size: 0.95em; }
+.back .bio div { display: grid; }
+.back .k { font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--card-muted); }
+.back .v { font-weight: 700; }
+.back .section-title {
+  font-family: var(--display); font-weight: 600; font-size: 1.05em; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--card-navy); border-bottom: 0.15em solid var(--card-gold); padding-bottom: 0.15em;
+}
+.back table { color: var(--card-ink); width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.95em; }
+.back th, .back td { padding: 0.25em 0.2em; text-align: right; }
+.back th:first-child, .back td:first-child { text-align: left; }
+.back th { font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.06em; color: var(--card-muted); font-weight: 700; }
+.back tbody tr:nth-child(odd) td { background: var(--card-stripe); }
+.back tfoot td { font-weight: 700; border-top: 0.1em solid var(--card-navy); }
+.back .highlight { margin: auto 0 0; font-size: 0.95em; line-height: 1.35; }
+.back .highlight b { color: var(--card-blue); }
+.back .foot {
+  background: var(--card-navy); color: var(--card-gold); font-family: var(--display); font-size: 0.85em;
+  letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding: 0.35em;
+}
+
+/* ---------- forms (roster page) ---------- */
+input, select, button { font: inherit; }
+input, select {
+  color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px;
+  max-width: 100%;
+}
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--court); outline-offset: 1px; }
+.narrow { max-width: 420px; }
+.stack { display: grid; gap: 12px; }
+.stack label, .row-form label, .team-pick { display: grid; gap: 4px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.row-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-top: 12px; }
+.team-pick { max-width: 360px; }
+.button {
+  background: var(--court); color: var(--surface); border: 0; border-radius: 6px;
+  padding: 8px 14px; font-weight: 700; cursor: pointer;
+}
+.button:hover { filter: brightness(1.08); }
+.button:disabled { opacity: 0.5; cursor: default; }
+.button.small { padding: 6px 10px; font-size: 14px; }
+.button.ghost { background: transparent; color: var(--court); border: 1px solid var(--line); }
+.status { margin: 0; min-height: 1.5em; font-weight: 600; }
+.status.ok { color: var(--court); }
+.status.error { color: #c82333; }
+table.edit { min-width: 640px; }
+table.edit td { padding: 6px; }
+table.edit input { width: 100%; }
+table.edit .actions { white-space: nowrap; display: flex; gap: 6px; }
+details summary { cursor: pointer; }
+.auth-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin: 0; }
+.linklike {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--court); font-weight: 600; text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .profile { grid-template-columns: 1fr; }
+  .photo { max-width: 220px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thumb { transition: none; }
+  .thumb:hover { transform: none; }
+}
+
+/* Print: the card page prints at real trading-card size with dashed cut lines. */
+@page { size: letter portrait; margin: 0.5in; }
+@media print {
+  body { background: #ffffff; }
+  .wrap { padding: 0; max-width: none; }
+  .top-nav, .print-tip, .side-label, .view-head { display: none; }
+  .sheet .card { font-size: 0.1in; border-radius: 0; box-shadow: none; outline: 1px dashed #9aabc6; outline-offset: 0.06in; }
+}
+
+/* ---------- Admin page ---------- */
+.contact { display: grid; gap: 1px; margin-bottom: 8px; }
+.contact:last-child { margin-bottom: 0; }
+.contact a { text-decoration: none; }
+.admin-teams { min-width: 560px; }
+.panel h2 + .table-scroll, .panel .table-scroll + h2 { margin-top: 12px; }
+a.button { display: inline-block; text-decoration: none; }
