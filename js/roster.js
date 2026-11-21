@@ -2,7 +2,8 @@
 // The database enforces who can edit what (supabase/roster_access.sql); this
 // page only hides buttons the user can't use.
 import { db, isConfigured, getTeams, getActivePlayers } from "./data.js";
-import { esc, showMessage } from "./render.js";
+import { esc, showMessage, safePhoto } from "./render.js";
+import { uploadPlayerPhoto, removePlayerPhoto } from "./photos.js";
 
 const app = document.getElementById("app");
 const topNav = document.getElementById("topNav"); // "← Scoresheet", signed-in only
@@ -166,6 +167,53 @@ function playerRow(p) {
   </tr>`;
 }
 
+// Player photos: pick a player, pick a photo, upload. Shows the current photo.
+function photoPanel() {
+  if (!state.players.length) return "";
+  const options = state.players.map(p =>
+    `<option value="${esc(p.id)}">${p.jersey != null ? `#${esc(p.jersey)} ` : ""}${esc(p.first_name)} ${esc(p.last_name)}${p.photo_path ? " ✓" : ""}</option>`).join("");
+  return `
+    <section class="panel" id="photos">
+      <h2>Player photos</h2>
+      <p class="muted">Photos show on the team page, player page and player card. Only signed-in people with
+        access to this team can see them. A check (✓) means the player already has a photo.</p>
+      <div class="photo-upload">
+        <div class="photo-preview" id="photoPreview"></div>
+        <div class="stack">
+          <label>Player <select id="photoPlayer">${options}</select></label>
+          <label>Photo <input type="file" id="photoFile" accept="image/*"></label>
+          <div class="actions">
+            <button type="button" class="button" data-action="upload-photo">Upload photo</button>
+            <button type="button" class="button ghost" data-action="remove-photo">Remove photo</button>
+          </div>
+          <p id="photoStatus" class="status" role="status"></p>
+        </div>
+      </div>
+    </section>`;
+}
+
+// Show the chosen file if one is picked, else the player's current photo.
+function showPhotoPreview() {
+  const box = document.getElementById("photoPreview");
+  if (!box) return;
+  const file = document.getElementById("photoFile").files[0];
+  if (box.dataset.objectUrl) { URL.revokeObjectURL(box.dataset.objectUrl); delete box.dataset.objectUrl; }
+  if (file && file.type.startsWith("image/")) {
+    box.dataset.objectUrl = URL.createObjectURL(file);
+    box.innerHTML = `<img src="${box.dataset.objectUrl}" alt="New photo preview">`;
+    return;
+  }
+  const player = state.players.find(p => p.id === document.getElementById("photoPlayer").value);
+  const src = player && safePhoto(player.photo_url);
+  box.innerHTML = src ? `<img src="${esc(src)}" alt="Current photo">` : `<span class="muted">No photo yet</span>`;
+}
+
+function setPhotoStatus(text, isError = false) {
+  const el = document.getElementById("photoStatus");
+  el.textContent = text;
+  el.className = isError ? "status error" : "status ok";
+}
+
 function rosterView() {
   const team = state.teams.find(t => t.id === state.teamId);
   const teamOptions = state.teams.map(t =>
@@ -184,7 +232,7 @@ function rosterView() {
   // Scorers and parents don't manage a roster; tell them where to go instead.
   const noTeams = state.teams.length ? "" : `<section class="panel"><p class="muted">${
     state.roles.includes("scorer") ? `Your account is a <b>scorer</b>. Open the <a href="index.html">scoresheet</a> to keep score.` :
-    state.roles.includes("parent") ? `Open the <a href="index.html">scoresheet</a> to watch live games.` :
+    state.roles.includes("parent") ? `Open your <a href="team.html">team page</a>.` :
     "Your account is waiting for the admin to approve it. Check back after they do."}</p></section>`;
 
   // Approvals, coaches and games live on the admin page now.
@@ -216,7 +264,8 @@ function rosterView() {
           </tfoot>
         </table>
       </div>
-    </section>` : "";
+    </section>
+    ${photoPanel()}` : "";
 
   topNav.hidden = false;
   app.innerHTML = `
@@ -229,6 +278,7 @@ function rosterView() {
     </div>
     ${state.teams.length ? `<label class="team-pick">Team <select id="team">${teamOptions}</select></label>` : ""}
     ${noTeams}${roster}${adminLink}${adminTools}`;
+  showPhotoPreview();
 }
 
 async function refresh() {
@@ -238,6 +288,8 @@ async function refresh() {
     // While setting a new password, stay on that screen even though a session exists.
     if (!state.user || state.mode === "newpassword") return authView();
     await loadAccess();
+    // Parents only have team pages.
+    if (state.roles.length && state.roles.every(r => r === "parent")) return location.replace("team.html");
     await loadPlayers();
     rosterView();
   } catch (err) {
@@ -319,6 +371,7 @@ app.addEventListener("submit", async e => {
 });
 
 app.addEventListener("change", async e => {
+  if (e.target.id === "photoPlayer" || e.target.id === "photoFile") return showPhotoPreview();
   if (e.target.id === "team") {
     state.teamId = e.target.value;
     await loadPlayers();
@@ -365,6 +418,32 @@ app.addEventListener("click", async e => {
       if (error) return setStatus(friendlyError(error), true);
       if (!data.length) return setStatus(friendlyError({ code: "42501" }), true);
       setStatus(`Saved ${player.first_name} ${player.last_name}.`);
+    }
+
+    if (action === "upload-photo" || action === "remove-photo") {
+      const playerId = document.getElementById("photoPlayer").value;
+      const player = state.players.find(p => p.id === playerId);
+      const name = `${player.first_name} ${player.last_name}`;
+      try {
+        if (action === "upload-photo") {
+          const file = document.getElementById("photoFile").files[0];
+          if (!file) return setPhotoStatus("Choose a photo first.", true);
+          setPhotoStatus("Uploading…");
+          await uploadPlayerPhoto(player, file);
+        } else {
+          if (!player.photo_path) return setPhotoStatus(`${name} has no photo.`, true);
+          if (!confirm(`Remove ${name}'s photo?`)) return;
+          await removePlayerPhoto(player);
+        }
+      } catch (err) {
+        // photos.js only throws messages meant for the coach
+        return setPhotoStatus(err.message, true);
+      }
+      await loadPlayers();
+      rosterView();
+      document.getElementById("photoPlayer").value = playerId; // stay on the same player
+      showPhotoPreview();
+      setPhotoStatus(action === "upload-photo" ? `Photo saved for ${name}.` : `Removed ${name}'s photo.`);
     }
 
     if (action === "remove") {

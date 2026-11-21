@@ -1,7 +1,8 @@
 // Runs the scoresheet page. Decides, from who is signed in, whether this
 // device KEEPS SCORE or just WATCHES:
 //   scorer / admin : can edit; every change saves itself to the game (live)
-//   coach / parent : read-only; the sheet follows the live game as it changes
+//   coach          : read-only; the sheet follows the live game as it changes
+//   parent         : no scoresheet; sent to their team page
 //   signed out / not approved : read-only, with a sign-in note
 // Open a specific game with index.html?game=<id> (the admin page links these).
 import { isConfigured, db, getMyAccess, getTeams } from "./data.js";
@@ -221,6 +222,7 @@ async function main() {
   if (!access.user) {
     return location.replace("roster.html?next=" + encodeURIComponent("index.html" + location.search));
   }
+  if (access.parentOnly) return location.replace("team.html");
   if (!access.isApproved) {
     setReadOnly(true);
     return showBar(`Your account is waiting for the admin to approve it.`);
@@ -241,11 +243,11 @@ async function main() {
     } else {
       const date = document.querySelector("input.gameDate");
       if (!date.value) date.value = today();
-      setStatus(`New game. Pick the <b>Home</b> and <b>Away</b> teams; it goes live for coaches and parents once both are picked.`);
+      setStatus(`New game. Pick the <b>Home</b> and <b>Away</b> teams; it goes live for coaches once both are picked.`);
     }
     startScoring();
   } else {
-    // Coaches, parents, or anyone looking at a locked game: read-only.
+    // Coaches, or anyone looking at a locked game: read-only.
     setReadOnly(true);
     if (game) {
       await applySheet(game.sheet, { withPickers: false });

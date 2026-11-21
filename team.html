@@ -17,7 +17,7 @@
         With no ?team=, the first team in the database is shown.
     -->
     <div class="wrap">
-        <nav class="top-nav"><a href="index.html">&larr; Scoresheet</a></nav>
+        <nav class="top-nav"><a href="index.html" id="scoresheetLink">&larr; Scoresheet</a></nav>
         <main id="app" class="wrap" style="padding:0" aria-live="polite"><p class="muted">Loading&hellip;</p></main>
     </div>
 
@@ -56,9 +56,11 @@
             // Admin: every team. Coach: only their own. The database enforces the same rule.
             const access = await getMyAccess();
             if (!access.user) return signInPrompt(app);
+            // Parents don't use the scoresheet.
+            document.getElementById("scoresheetLink").hidden = access.parentOnly;
             if (!access.teams.length) {
                 return access.isApproved
-                    ? showMessage(app, "Coaches and admins only", "Team pages are for each team's coach. Live games are on the scoresheet.")
+                    ? showMessage(app, "Coaches, parents and admins only", "Team pages are for each team's coaches and parents. Live games are on the scoresheet.")
                     : showMessage(app, "Waiting for approval", "The admin needs to approve your account and link it to your team.");
             }
             const slug = new URLSearchParams(location.search).get("team");

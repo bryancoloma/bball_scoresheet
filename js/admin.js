@@ -102,6 +102,8 @@ function teamsHtml() {
     </section>`;
 }
 
+const teamName = id => state.teams.find(t => t.id === id)?.name ?? "team";
+
 function accountsHtml() {
   const teamOptions = state.teams.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
   const pending = state.pending.map(a => `<tr data-account="${esc(a.user_id)}">
@@ -117,14 +119,15 @@ function accountsHtml() {
     <section class="panel">
       <h2>Account requests</h2>
       ${pending ? `
-        <p class="muted">Only approve people you know. A coach needs a team; scorers and parents don't.</p>
+        <p class="muted">Only approve people you know. Coaches and parents get one team; scorers don't need one.
+          Parents only see their team's page.</p>
         <div class="table-scroll"><table class="data edit">
           <thead><tr><th>Person</th><th>Role</th><th>Team</th><th></th></tr></thead>
           <tbody>${pending}</tbody>
         </table></div>` : `<p class="muted">No one is waiting for approval.</p>`}
       <h2>Scorers and parents</h2>
       <div class="table-scroll"><table class="data">
-        <tbody>${others.map(s => `<tr><td>${person(s)}</td><td>${esc(s.role)}</td></tr>`).join("") ||
+        <tbody>${others.map(s => `<tr><td>${person(s)}</td><td>${esc(s.role)}${s.role === "parent" ? ` &middot; ${esc(teamName(s.team_id))}` : ""}</td></tr>`).join("") ||
           `<tr><td class="muted">None yet.</td></tr>`}</tbody>
       </table></div>
     </section>`;
@@ -147,8 +150,8 @@ async function refreshGames() {
 // ---------- actions ----------
 
 app.addEventListener("change", e => {
-  // The team box only matters for coaches.
-  if (e.target.name === "role") e.target.closest("tr").querySelector('[name="team"]').disabled = e.target.value !== "coach";
+  // Coaches and parents belong to a team; scorers don't.
+  if (e.target.name === "role") e.target.closest("tr").querySelector('[name="team"]').disabled = e.target.value === "scorer";
 });
 
 app.addEventListener("click", async e => {
@@ -183,10 +186,11 @@ app.addEventListener("click", async e => {
       const role = row.querySelector('[name="role"]').value;
       const team = row.querySelector('[name="team"]');
       const who = row.querySelector(".contact b").textContent;
-      if (role === "coach" && !team.value) return alert("Add a team first (Rosters page), then approve the coach.");
-      const what = role === "coach" ? `coach of ${team.selectedOptions[0].textContent}` : role;
+      const needsTeam = role !== "scorer";
+      if (needsTeam && !team.value) return alert("Add a team first (Rosters page), then approve.");
+      const what = needsTeam ? `${role} for ${team.selectedOptions[0].textContent}` : role;
       if (!confirm(`Approve ${who} as ${what}?`)) return;
-      unwrap(await db.rpc("approve_account", { account: row.dataset.account, new_role: role, team: role === "coach" ? team.value : null }));
+      unwrap(await db.rpc("approve_account", { account: row.dataset.account, new_role: role, team: needsTeam ? team.value : null }));
       await loadPeople();
       render();
     }
