@@ -16,7 +16,7 @@
     </div>
 
     <script type="module">
-        import { isConfigured, db, getPlayer } from "./js/data.js";
+        import { isConfigured, getMyAccess, getPlayer } from "./js/data.js";
         import { esc, avg, fullName, shortDate, photoBlock, quarters, resultCell, recordText, thumb, showMessage, signInPrompt } from "./js/render.js";
 
         const app = document.getElementById("app");
@@ -26,8 +26,8 @@
                 return showMessage(app, "Not connected yet", "Add the Supabase URL and publishable key to js/config.js.");
             }
             // Signed-in coaches and admins only; the database also hides other teams' players.
-            const { data: { session } } = await db.auth.getSession();
-            if (!session) return signInPrompt(app);
+            const access = await getMyAccess();
+            if (!access.user) return signInPrompt(app);
             const slug = new URLSearchParams(location.search).get("id");
             const p = slug ? await getPlayer(slug) : null;
             if (!p) return showMessage(app, "Player not found", "Check the link. You can only view players on your own team.");
@@ -35,6 +35,8 @@
             const { team, season: s, record } = p;
             const teamLink = `team.html?team=${encodeURIComponent(team.slug)}`;
             const cardLink = `card.html?id=${encodeURIComponent(p.slug)}`;
+            // Cards stay hidden from coaches until an admin releases them for the team.
+            const showCards = access.isAdmin || team.cards_released;
             const log = p.log.map(g => `<tr>
                 <td>${shortDate(g.game_date)}</td><td>${esc(g.opponent)}</td>${resultCell(g)}
                 <td>${quarters(g.periods)}</td>
@@ -72,10 +74,10 @@
                             <span>High game <b>${s.high_points} pts</b></span>
                             <span>Team record <b>${recordText(record)}</b></span>
                         </p>
-                        <div class="profile-actions">
+                        ${showCards ? `<div class="profile-actions">
                             ${thumb(p, team)}
                             <a class="button-link" href="${cardLink}">See player card</a>
-                        </div>
+                        </div>` : ""}
                     </div>
                 </section>
 

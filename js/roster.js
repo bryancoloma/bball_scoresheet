@@ -10,7 +10,7 @@ const MIN_PASSWORD = 8;
 // Read it now, before the Supabase client tidies the URL.
 const arrivedFromResetLink = location.hash.includes("type=recovery");
 const state = {
-  user: null, isAdmin: false, teams: [], teamId: null, players: [], pending: [],
+  user: null, isAdmin: false, roles: [], teams: [], teamId: null, players: [],
   // signed-out screens: "signin" | "signup" | "forgot" | "newpassword"
   mode: arrivedFromResetLink ? "newpassword" : "signin",
 };
@@ -36,7 +36,7 @@ function friendlyError(err) {
 // Only our own pages are allowed, so the link can't send people to another site.
 function nextPage() {
   const next = new URLSearchParams(location.search).get("next") ?? "";
-  return /^(index|team|player|card)\.html(\?[\w=&%.-]*)?$/.test(next) ? next : null;
+  return /^(index|team|player|card|admin)\.html(\?[\w=&%.-]*)?$/.test(next) ? next : null;
 }
 
 // The two password boxes must match and be long enough. Returns an error message or "".
@@ -74,7 +74,8 @@ async function loadAccess() {
   // Staff rows tell us if this user is an admin, or which teams they coach.
   const { data: staff, error } = await db.from("staff").select("role, team_id");
   if (error) throw error;
-  state.isAdmin = staff.some(s => s.role === "admin");
+  state.roles = [...new Set(staff.map(s => s.role))];
+  state.isAdmin = state.roles.includes("admin");
   const allTeams = await getTeams();
   const coachTeamIds = new Set(staff.filter(s => s.role === "coach").map(s => s.team_id));
   state.teams = state.isAdmin ? allTeams : allTeams.filter(t => coachTeamIds.has(t.id));
@@ -104,16 +105,19 @@ function authView() {
 
   const screens = {
     signin: {
-      title: "Roster sign-in",
-      intro: "For coaches and admins.",
+      title: "Sign in",
+      intro: "For admins, coaches, scorers and parents.",
       fields: `${emailBox}<label>Password <input name="password" type="password" autocomplete="current-password" required></label>`,
       submit: "Sign in",
       links: `${link("forgot", "Forgot password?")} ${link("signup", "Create an account")}`,
     },
     signup: {
       title: "Create an account",
-      intro: "After you sign up, the admin approves your account and links it to your team. Until then you can't edit rosters.",
-      fields: emailBox + newPasswordBoxes,
+      intro: "After you sign up, the admin approves your account (as a coach, scorer or parent). Until then you can't see games or rosters.",
+      fields: `
+        <label>Full name <input name="full_name" autocomplete="name" maxlength="80" required></label>
+        <label>Phone <input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" required></label>
+        ${emailBox}${newPasswordBoxes}`,
       submit: "Create account",
       links: link("signin", "Already have an account? Sign in"),
     },
@@ -175,27 +179,16 @@ function rosterView() {
       </form>
     </details>` : "";
 
-  const noTeams = !state.teams.length
-    ? `<section class="panel"><p class="muted">Your account is waiting for the admin to approve it and link it to your team.
-       Check back after they do.</p></section>` : "";
+  // Scorers and parents don't manage a roster; tell them where to go instead.
+  const noTeams = state.teams.length ? "" : `<section class="panel"><p class="muted">${
+    state.roles.includes("scorer") ? `Your account is a <b>scorer</b>. Open the <a href="index.html">scoresheet</a> to keep score.` :
+    state.roles.includes("parent") ? `Open the <a href="index.html">scoresheet</a> to watch live games.` :
+    "Your account is waiting for the admin to approve it. Check back after they do."}</p></section>`;
 
-  // Admin only: accounts that signed up and are waiting for a team.
-  const allTeamOptions = state.teams.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
-  const requests = state.isAdmin ? `
-    <section class="panel">
-      <h2>Coach requests</h2>
-      ${state.pending.length ? `
-        <p class="muted">Only approve people you know. Check with the coach that the email is theirs.</p>
-        <div class="table-scroll"><table class="data edit">
-          <thead><tr><th>Email</th><th>Signed up</th><th>Team</th><th></th></tr></thead>
-          <tbody>${state.pending.map(a => `<tr data-account="${esc(a.user_id)}">
-            <td>${esc(a.email)}</td>
-            <td>${new Date(a.created_at).toLocaleDateString()}</td>
-            <td><select name="team" aria-label="Team for ${esc(a.email)}">${allTeamOptions}</select></td>
-            <td class="actions"><button type="button" class="button small" data-action="approve">Approve as coach</button></td>
-          </tr>`).join("")}</tbody>
-        </table></div>` : `<p class="muted">No one is waiting for approval.</p>`}
-    </section>` : "";
+  // Approvals, coaches and games live on the admin page now.
+  const adminLink = state.isAdmin ? `
+    <section class="panel"><p><a class="button-link" href="admin.html">Open the admin page &rarr;</a>
+      Approve new accounts, see coaches' contact info, unlock games and release player cards.</p></section>` : "";
 
   const roster = team ? `
     <section class="panel">
@@ -226,20 +219,13 @@ function rosterView() {
   app.innerHTML = `
     <div class="team-head">
       <div>
-        <p class="eyebrow">Signed in as ${esc(state.user.email)}${state.isAdmin ? " &middot; admin" : " &middot; coach"}</p>
+        <p class="eyebrow">Signed in as ${esc(state.user.email)}${state.roles.length ? ` &middot; ${esc(state.roles.join(", "))}` : ""}</p>
         <h1>Team rosters</h1>
       </div>
       <button type="button" class="button ghost" id="signout">Sign out</button>
     </div>
     ${state.teams.length ? `<label class="team-pick">Team <select id="team">${teamOptions}</select></label>` : ""}
-    ${noTeams}${roster}${requests}${adminTools}`;
-}
-
-async function loadPending() {
-  if (!state.isAdmin) return (state.pending = []);
-  const { data, error } = await db.rpc("pending_accounts");
-  if (error) throw error;
-  state.pending = data;
+    ${noTeams}${roster}${adminLink}${adminTools}`;
 }
 
 async function refresh() {
@@ -249,7 +235,7 @@ async function refresh() {
     // While setting a new password, stay on that screen even though a session exists.
     if (!state.user || state.mode === "newpassword") return authView();
     await loadAccess();
-    await Promise.all([loadPlayers(), loadPending()]);
+    await loadPlayers();
     rosterView();
   } catch (err) {
     console.error(err);
@@ -279,7 +265,13 @@ app.addEventListener("submit", async e => {
     if (form.id === "auth-signup") {
       const problem = checkNewPassword(form);
       if (problem) return setStatus(problem, true);
-      const { data, error } = await db.auth.signUp({ email: form.email.value.trim(), password: form.password.value });
+      // Name and phone go in as user metadata; the database copies them into
+      // public.profiles for the admin page (supabase/live_games.sql).
+      const { data, error } = await db.auth.signUp({
+        email: form.email.value.trim(),
+        password: form.password.value,
+        options: { data: { full_name: form.full_name.value.trim(), phone: form.phone.value.trim() } },
+      });
       if (error) return setStatus(friendlyError(error), true);
       // With "Confirm email" off in Supabase, sign-up signs you straight in.
       if (data.session) return refresh();
@@ -365,17 +357,6 @@ app.addEventListener("click", async e => {
       if (error) return setStatus(friendlyError(error), true);
       if (!data.length) return setStatus(friendlyError({ code: "42501" }), true);
       setStatus(`Saved ${player.first_name} ${player.last_name}.`);
-    }
-
-    if (action === "approve") {
-      const team = row.querySelector('[name="team"]');
-      const email = row.cells[0].textContent;
-      const teamName = team.selectedOptions[0].textContent;
-      if (!confirm(`Approve ${email} as coach of ${teamName}?`)) return;
-      const { error } = await db.rpc("approve_coach", { account: row.dataset.account, team: team.value });
-      if (error) return alert(friendlyError(error));
-      await loadPending();
-      rosterView();
     }
 
     if (action === "remove") {

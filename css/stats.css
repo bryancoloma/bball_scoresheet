@@ -261,3 +261,11 @@ details summary { cursor: pointer; }
   .top-nav, .print-tip, .side-label, .view-head { display: none; }
   .sheet .card { font-size: 0.1in; border-radius: 0; box-shadow: none; outline: 1px dashed #9aabc6; outline-offset: 0.06in; }
 }
+
+/* ---------- Admin page ---------- */
+.contact { display: grid; gap: 1px; margin-bottom: 8px; }
+.contact:last-child { margin-bottom: 0; }
+.contact a { text-decoration: none; }
+.admin-teams { min-width: 560px; }
+.panel h2 + .table-scroll, .panel .table-scroll + h2 { margin-top: 12px; }
+a.button { display: inline-block; text-decoration: none; }

@@ -23,19 +23,29 @@ export async function getTeam(slug) {
 // All teams, alphabetical (for the scoresheet and roster pickers).
 // Needs an approved (admin or coach) sign-in; otherwise the database returns none.
 export async function getTeams() {
-  return unwrap(await db.from("teams").select("id, slug, name, org, season").order("name"));
+  return unwrap(await db.from("teams").select("id, slug, name, org, season, cards_released").order("name"));
 }
 
-// Who is signed in, and which teams they may view: every team for an admin,
-// only their own team(s) for a coach, none if signed out or not yet approved.
+// Who is signed in, their roles, and which teams' pages they may view:
+// every team for an admin, only their own team(s) for a coach, none otherwise.
+// Roles: admin, coach, scorer (keeps score), parent (watches games).
 export async function getMyAccess() {
   const { data: { session } } = await db.auth.getSession();
-  if (!session) return { user: null, isAdmin: false, teams: [] };
+  const none = { user: null, roles: [], isAdmin: false, canScore: false, isApproved: false, teams: [] };
+  if (!session) return none;
   const staff = unwrap(await db.from("staff").select("role, team_id"));
-  const isAdmin = staff.some(s => s.role === "admin");
+  const roles = [...new Set(staff.map(s => s.role))];
+  const isAdmin = roles.includes("admin");
   const coachTeamIds = new Set(staff.filter(s => s.role === "coach").map(s => s.team_id));
   const all = staff.length ? await getTeams() : [];
-  return { user: session.user, isAdmin, teams: isAdmin ? all : all.filter(t => coachTeamIds.has(t.id)) };
+  return {
+    user: session.user,
+    roles,
+    isAdmin,
+    canScore: isAdmin || roles.includes("scorer"),
+    isApproved: staff.length > 0,
+    teams: isAdmin ? all : all.filter(t => coachTeamIds.has(t.id)),
+  };
 }
 
 // Names and numbers only, for the scoresheet drop-downs (works for any team,

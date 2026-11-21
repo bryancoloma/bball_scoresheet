@@ -26,13 +26,14 @@
 
         const app = document.getElementById("app");
 
-        function rosterRow(p, team) {
+        // showCards: the little card link shows only once an admin releases cards (or for admins).
+        function rosterRow(p, team, showCards) {
             const s = p.season;
             return `<tr>
                 <td class="jersey-cell">${esc(p.jersey)}</td>
                 <td>
                     <div class="player-cell">
-                        ${thumb(p, team)}
+                        ${showCards ? thumb(p, team) : ""}
                         <div>
                             <a class="player-name" href="player.html?id=${encodeURIComponent(p.slug)}">${esc(fullName(p))}</a>
                             <span class="player-sub">${esc(p.position)} &middot; ${esc(p.grade)} grade</span>
@@ -55,13 +56,16 @@
             const access = await getMyAccess();
             if (!access.user) return signInPrompt(app);
             if (!access.teams.length) {
-                return showMessage(app, "Waiting for approval", "The admin needs to approve your account and link it to your team.");
+                return access.isApproved
+                    ? showMessage(app, "Coaches and admins only", "Team pages are for each team's coach. Live games are on the scoresheet.")
+                    : showMessage(app, "Waiting for approval", "The admin needs to approve your account and link it to your team.");
             }
             const slug = new URLSearchParams(location.search).get("team");
             const team = slug ? access.teams.find(t => t.slug === slug) : access.teams[0];
             if (!team) return showMessage(app, "No access to that team", "You can only view your own team.");
 
             const [roster, record] = await Promise.all([getRoster(team.id), getGames(team.id)]);
+            const showCards = access.isAdmin || team.cards_released;
 
             // Team drop-down when there's more than one team to choose from (always for an admin).
             const picker = access.teams.length > 1 ? `
@@ -97,10 +101,11 @@
                                 <th class="num">Games</th><th class="num">Pts / G</th><th class="num">Fouls / G</th>
                                 <th class="num">Periods / G</th><th class="num">Total pts</th>
                             </tr></thead>
-                            <tbody>${roster.map(p => rosterRow(p, team)).join("")}</tbody>
+                            <tbody>${roster.map(p => rosterRow(p, team, showCards)).join("")}</tbody>
                         </table>
                     </div>
-                    <p class="muted">Click a name to open the player's stats, or the small card to see their player card.</p>
+                    <p class="muted">${showCards ? "Click a name to open the player's stats, or the small card to see their player card."
+                        : "Click a name to open the player's stats. Player cards appear here once the league releases them."}</p>
                 </section>
 
                 <section class="panel" aria-label="Recent games">

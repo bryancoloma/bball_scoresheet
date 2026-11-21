@@ -21,6 +21,16 @@
         <a href="team.html">Team Page &rarr;</a>
     </nav>
 
+    <!-- Live game status and the list of games in progress (js/live.js). -->
+    <section id="gameBar" class="gameBar" aria-live="polite" hidden></section>
+
+    <!-- Always-visible score while scrolling (js/scoreboard.js copies it from the team strips). -->
+    <div class="scoreboard" aria-label="Score">
+        <div class="sbTeam"><span class="sbSide">Home</span><span id="sbHomeName" class="sbName">Home</span><span class="sbFouls">Fouls <b id="sbHomeFouls">0</b></span></div>
+        <div class="sbScore"><span id="sbHomeScore">0</span><span class="sbDash">&ndash;</span><span id="sbAwayScore">0</span></div>
+        <div class="sbTeam away"><span class="sbSide">Away</span><span id="sbAwayName" class="sbName">Away</span><span class="sbFouls">Fouls <b id="sbAwayFouls">0</b></span></div>
+    </div>
+
     <div class="gameDay_info">
         <label class="gameTime">TIME:</label>
         <input type="time" class="gameTime" step="60">
@@ -38,23 +48,30 @@
         <br>
         <br> -->
 
-        <div class="homeTimeOut">
-
-            <label class="homeTO1">1st Half TimeOut: </label>
-            <input type="checkbox" class="fistHomeTimeOut">
-
-            &#160;
-
-            <label class="homeTO2">2nd Half TimeOut: </label>
-            <input type="checkbox" class="secondHomeTimeOut" maxlength="5">
-
-            &#160;
-
-            <label class="homeOT">Overtime-TimeOut: </label>
-            <input type="checkbox" class="overTimeHomeTimeOut" maxlength="5">
+        <!-- Team strip: team, score, team fouls and timeouts above the player table.
+             Only registered teams can play. Picking a team turns player rows 1-8
+             into roster drop-downs (js/scoresheet.js). -->
+        <div class="teamStrip homeStrip">
+            <span class="stripSide">Home</span>
+            <div class="teamPickBox">
+                <select id="homeTeamPick" class="homeTeam teamPick" aria-label="Home team">
+                    <option value="" disabled selected>Pick team&hellip;</option>
+                </select>
+            </div>
+            <label class="stripStat">Score
+                <input type="text" id="homeTotalScore" class="homeScoreBox" value="0" readonly>
+            </label>
+            <!-- Team fouls add up from the player fouls (score_foul.js), so they can't be typed wrong. -->
+            <label class="stripStat">Team fouls
+                <input type="text" id="homeTotalFouls" class="homeFoulBox" value="0" readonly>
+            </label>
+            <div class="homeTimeOut">
+                <span class="stripLabel">Timeouts:</span>
+                <label class="homeTO1">1st half <input type="checkbox" class="fistHomeTimeOut"></label>
+                <label class="homeTO2">2nd half <input type="checkbox" class="secondHomeTimeOut"></label>
+                <label class="homeOT">OT <input type="checkbox" class="overTimeHomeTimeOut"></label>
+            </div>
         </div>
-
-        <br>
 
         <div class="homeInfo">
 
@@ -362,31 +379,7 @@
 
                 </table>
 
-                <div class="homeScore">
-                    <div class="scoreBox">
-                        
-                        <input type="text" id="homeTotalFouls" class="homeFoulBox">
-                        <label for="homeTeamFouls" class="homeTeamFouls">HOME FOULS:</label>
 
-                        &#160;
-
-                        <input type="text" id="homeTotalScore" class="homeScoreBox" readonly>
-                        <label for="" class="homeTeamScore">HOME SCORE</label>
-
-                        <br>
-
-                        <label for="homeTeamPick">Home Team: </label>
-                        <!-- Picking a team turns player rows 1-8 into roster drop-downs (js/scoresheet.js).
-                             The text box is for a team that isn't in the list. -->
-                        <div class="teamPickBox">
-                            <select id="homeTeamPick" class="homeTeam teamPick">
-                                <option value="">Other team</option>
-                            </select>
-                            <input type="text" class="homeTeam" maxlength="20" aria-label="Home team name" placeholder="Team name">
-                        </div>
-
-                    </div>
-                </div>
 
 
             </div>
@@ -399,23 +392,30 @@
 
     <div class="awayBlock">
 
-        <div class="awayTimeOut">
-
-            <label class="awayTO1">1st Half TimeOut: </label>
-            <input type="checkbox" class="fistAwayTimeOut" max="5">
-
-            &#160;
-
-            <label class="awayTO2">2nd Half TimeOut: </label>
-            <input type="checkbox" class="secondAwayTimeOut" maxlength="5">
-
-            &#160;
-
-            <label class="awayOT">Overtime-Time Out: </label>
-            <input type="checkbox" class="overTimeAwayTimeOut" maxlength="5">
+        <!-- Team strip: team, score, team fouls and timeouts above the player table.
+             Only registered teams can play. Picking a team turns player rows 1-8
+             into roster drop-downs (js/scoresheet.js). -->
+        <div class="teamStrip awayStrip">
+            <span class="stripSide">Away</span>
+            <div class="teamPickBox">
+                <select id="awayTeamPick" class="awayTeam teamPick" aria-label="Away team">
+                    <option value="" disabled selected>Pick team&hellip;</option>
+                </select>
+            </div>
+            <label class="stripStat">Score
+                <input type="text" id="awayTotalScore" class="awayScoreBox" value="0" readonly>
+            </label>
+            <!-- Team fouls add up from the player fouls (score_foul.js), so they can't be typed wrong. -->
+            <label class="stripStat">Team fouls
+                <input type="text" id="awayTotalFouls" class="awayFoulBox" value="0" readonly>
+            </label>
+            <div class="awayTimeOut">
+                <span class="stripLabel">Timeouts:</span>
+                <label class="awayTO1">1st half <input type="checkbox" class="fistAwayTimeOut" max="5"></label>
+                <label class="awayTO2">2nd half <input type="checkbox" class="secondAwayTimeOut"></label>
+                <label class="awayOT">OT <input type="checkbox" class="overTimeAwayTimeOut"></label>
+            </div>
         </div>
-
-        <br>
 
         <div class="awayInfo">
 
@@ -723,31 +723,7 @@
 
                 </table>
 
-                <div class="awayScore">
-                    <div class="scoreBox">
-                        
-                        <input type="text" id="awayTotalFouls" class="awayFoulBox">
-                        <label for="awayTeamFouls" class="awayTeamFouls">AWAY FOULS:</label>
 
-                        &#160;
-
-                        <input type="text" id="awayTotalScore" class="awayScoreBox" readonly>
-                        <label for="" class="awayTeamScore">AWAY SCORE</label>
-                        
-                        <br>
-                        
-                        <label for="awayTeamPick">Away Team: </label>
-                        <!-- Picking a team turns player rows 1-8 into roster drop-downs (js/scoresheet.js).
-                             The text box is for a team that isn't in the list. -->
-                        <div class="teamPickBox">
-                            <select id="awayTeamPick" class="awayTeam teamPick">
-                                <option value="">Other team</option>
-                            </select>
-                            <input type="text" class="awayTeam" maxlength="20" aria-label="Away team name" placeholder="Team name">
-                        </div>
-
-                    </div>
-                </div>
 
 
             </div>
@@ -756,7 +732,7 @@
 
     </div>
 
-    <!-- Save the whole sheet to the database (js/savegame.js). Asks to confirm first. -->
+    <!-- Scorers/admins: save the final stats and lock the game (js/savegame.js). Asks to confirm first. -->
     <div class="saveBar">
         <button type="button" id="saveGameBtn" class="saveGameBtn">Save game</button>
     </div>
@@ -770,7 +746,8 @@
         </div>
     </dialog>
 
-    <script type="module" src="js/scoresheet.js"></script>
-    <script type="module" src="js/savegame.js"></script>
+    <!-- Runs the page: scorer edits with live saving, everyone else watches (read-only). -->
+    <script type="module" src="js/scoreboard.js"></script>
+    <script type="module" src="js/live.js"></script>
 </body>
 </html>

@@ -66,10 +66,9 @@ input, select {
     padding: 4px 8px;
 }
 
-/* Team picker + "type a team name" box, kept together under the score */
+/* Team picker + "type a team name" box, side by side in the team strip */
 .teamPickBox {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 6px;
 }
@@ -149,6 +148,46 @@ h1{
 .saveNotes { color: #b45309; }
 .saveActions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
 
+/* ---------- Live game strip under the title ---------- */
+.gameBar {
+    max-width: 900px;
+    margin: 0 auto 16px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-align: center;
+}
+.gameBar[hidden] { display: none; }
+.gameStatus { margin: 0; font-size: 17px; }
+.gameStatus a { color: var(--court); font-weight: 600; }
+.gameList { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 8px; }
+.gameChip {
+    display: inline-block;
+    padding: 8px 14px;            /* finger-sized on an iPad */
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--court-soft);
+}
+.gameChip.new { color: var(--court); font-weight: 700; background: transparent; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+.dot.live { background: #16a34a; }
+.dot.off { background: #b45309; }
+
+/* ---------- Read-only sheet (coaches, parents, locked games) ---------- */
+/* No +1/-1 buttons, and disabled boxes still read clearly (Safari fades them). */
+.readOnly .increment-button-score, .readOnly .decrement-button-score,
+.readOnly .increment-button-foul, .readOnly .decrement-button-foul { display: none; }
+.readOnly input:disabled, .readOnly select:disabled {
+    opacity: 1;
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    background: var(--surface);
+}
+.readOnly .saveBar { display: none; }
+
 .signInHint {
     text-align: center;
     color: var(--muted);
@@ -174,8 +213,8 @@ h1{
 }
 
 .homeTeam, .awayTeam {
-    font-size: 23px;
-    width: 150px;
+    font-size: 17px;
+    width: 160px;
     text-align: center;
 }
 
@@ -216,7 +255,7 @@ h1{
 }
 
 
-.homePlayerInfo, .awayPlayerInfo, .homePlayerStats, .homeScore, .awayScore{
+.homePlayerInfo, .awayPlayerInfo, .homePlayerStats{
     display: inline-table;
     vertical-align: bottom;
 }
@@ -235,50 +274,86 @@ td {
     text-align: center;
 }
 
-.homeScore, .awayScore{
-    width: 175px;
-    min-height: 268px; /* min so the "type a team name" box has room */
+/* ---------- Team strip: team, score, team fouls, timeouts above each table ---------- */
+.teamStrip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px 18px;
+    max-width: 900px;
+    margin: 0 auto 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 2px solid var(--court);
+    border-radius: 10px;
 }
-
-.homeScoreBox, .awayScoreBox{
-    border: var(--ink) solid;
+.awayStrip { border-color: var(--away); }
+.stripSide {
     font-family: var(--display);
-    width: 100px;
-    height: 75px;
-    text-align: center;
-    font-size: 70px;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--court);
 }
-
-.homeFoulBox, .awayFoulBox {
-    border: var(--ink) solid;
+.awayStrip .stripSide, .awayStrip .stripStat { color: var(--away); }
+.stripStat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-family: var(--display);
-    width: 70px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--court);
+}
+.stripLabel { color: var(--muted); font-weight: 600; }
+.homeTimeOut label, .awayTimeOut label { margin-left: 8px; white-space: nowrap; }
+
+.homeScoreBox, .awayScoreBox {
+    border: 2px solid var(--ink);
+    font-family: var(--display);
+    width: 72px;
     height: 50px;
     text-align: center;
     font-size: 38px;
 }
+.homeFoulBox, .awayFoulBox {
+    border: 2px solid var(--ink);
+    font-family: var(--display);
+    width: 52px;
+    height: 40px;
+    text-align: center;
+    font-size: 26px;
+}
 
-.scoreBox{
-    display: flex;
+/* ---------- Sticky scoreboard: the score stays in view while scrolling ---------- */
+.scoreboard {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: center;
-    flex-direction: column-reverse;
-    padding-top: 20px;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto 12px;
+    padding: 6px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
 }
-
-.homeTeamFouls, .homeTeamScore {
-    color: var(--court);
-    font-family: var(--display);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-}
-
-.awayTeamFouls, .awayTeamScore {
-    color: var(--away);
-    font-family: var(--display);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-}
+.sbTeam { display: grid; min-width: 0; }
+.sbTeam.away { text-align: right; }
+.sbSide { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.sbName { font-weight: 700; font-size: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sbFouls { font-size: 13px; color: var(--muted); }
+.sbFouls b { color: var(--ink); }
+.sbScore { font-family: var(--display); font-weight: 600; font-size: 36px; line-height: 1; white-space: nowrap; }
+.sbScore #sbHomeScore { color: var(--court); }
+.sbScore #sbAwayScore { color: var(--away); }
+.sbDash { color: var(--muted); margin: 0 8px; }
 
 /* When a player reaches the max fouls, show the number bold and red */
 .foul-max {
@@ -299,10 +374,15 @@ button.decrement-button-foul:disabled {
 }
 
 @media print {
-    /* Paper is always white with dark ink, even if the iPad is in dark mode. */
+    /* Paper is always white with dark ink, whatever colors the screen uses
+       (dark mode, data-theme, or a team's own colors set later).
+       !important is needed: the dark-mode selectors above are more specific
+       than :root and would otherwise win when printing. */
     :root {
-        --bg: #ffffff; --surface: #ffffff; --ink: #000000; --muted: #333333; --line: #999999;
-        --court: #2164c9; --court-soft: #ffffff; --away: #41a7f5;
+        --bg: #ffffff !important; --surface: #ffffff !important; --ink: #000000 !important;
+        --muted: #333333 !important; --line: #999999 !important;
+        --court: #2164c9 !important; --court-soft: #ffffff !important; --away: #41a7f5 !important;
+        color-scheme: light !important; /* date/time/checkbox controls draw light too */
     }
 
     /* Drop-downs print as plain text: no arrow, no box. */
@@ -313,9 +393,9 @@ button.decrement-button-foul:disabled {
         background: transparent;
         text-align: center;
     }
-    /* Unpicked rows print blank, and "Other team" doesn't print (the typed name does). */
-    select.playerPick:has(option[value=""]:checked) { color: transparent; }
-    select.teamPick:has(option[value=""]:checked) { display: none; }
+    /* Unpicked players and teams print blank (room to write in by hand). */
+    select.playerPick:has(option[value=""]:checked),
+    select.teamPick:has(option[value=""]:checked) { color: transparent; }
     /* Gray hint text ("Team name") shouldn't print on an empty box. */
     ::placeholder { color: transparent; }
 
@@ -331,16 +411,27 @@ button.decrement-button-foul:disabled {
         margin: 0 0 18px;
     }
 
-    .gameDay_info,
-    .homeTimeOut,
-    .awayTimeOut {
+    .gameDay_info {
         margin: 2px 0;
     }
 
-    /* extra room between the time/date row and the 1st half timeouts */
+    /* extra room between the time/date row and the home team strip */
     .gameDay_info {
-        margin-bottom: 36px;
+        margin-bottom: 16px;
     }
+
+    /* One short line per team strip so both teams fit on the page */
+    .teamStrip {
+        flex-wrap: nowrap;
+        max-width: none;
+        padding: 3px 10px;
+        margin-bottom: 4px;
+        gap: 12px;
+        border-width: 1.5px;
+    }
+    .stripSide { font-size: 15px; }
+    .stripStat, .stripLabel, .homeTimeOut label, .awayTimeOut label { font-size: 12px; }
+    .homeTimeOut, .awayTimeOut { white-space: nowrap; }
 
     /* drop the spacer line breaks between sections */
     .homeBlock > br,
@@ -356,6 +447,8 @@ button.decrement-button-foul:disabled {
     /* links and the save button aren't useful on paper */
     .saveBar,
     .signInHint,
+    .gameBar,
+    .scoreboard,
     .pageNav {
         display: none;
     }
@@ -368,13 +461,10 @@ button.decrement-button-foul:disabled {
         display: none;
     }
 
-    /* player table and score boxes side by side */
     .homeInfoBlock,
     .awayInfoBlock {
         display: flex;
         justify-content: center;
-        align-items: center;
-        gap: 16px;
     }
 
     .homePlayerInfo,
@@ -412,33 +502,23 @@ button.decrement-button-foul:disabled {
         margin: 2px;
     }
 
-    .homeScore,
-    .awayScore {
-        width: auto;
-        height: auto;
-    }
-
-    .scoreBox {
-        padding-top: 0;
-    }
-
     .homeScoreBox,
     .awayScoreBox {
-        width: 90px;
-        height: 60px;
-        font-size: 48px;
+        width: 50px;
+        height: 30px;
+        font-size: 22px;
     }
 
     .homeFoulBox,
     .awayFoulBox {
-        width: 60px;
-        height: 40px;
-        font-size: 28px;
+        width: 38px;
+        height: 26px;
+        font-size: 17px;
     }
 
     .homeTeam,
     .awayTeam {
-        font-size: 16px;
-        width: 130px;
+        font-size: 14px;
+        width: 140px;
     }
 }

@@ -16,7 +16,7 @@
     </div>
 
     <script type="module">
-        import { isConfigured, db, getPlayer } from "./js/data.js";
+        import { isConfigured, getMyAccess, getPlayer } from "./js/data.js";
         import { esc, fullName, cardFront, cardBack, showMessage, signInPrompt } from "./js/render.js";
 
         const app = document.getElementById("app");
@@ -26,11 +26,14 @@
                 return showMessage(app, "Not connected yet", "Add the Supabase URL and publishable key to js/config.js.");
             }
             // Signed-in coaches and admins only; the database also hides other teams' players.
-            const { data: { session } } = await db.auth.getSession();
-            if (!session) return signInPrompt(app);
+            const access = await getMyAccess();
+            if (!access.user) return signInPrompt(app);
             const slug = new URLSearchParams(location.search).get("id");
             const p = slug ? await getPlayer(slug) : null;
             if (!p) return showMessage(app, "Player not found", "Check the link. You can only view players on your own team.");
+            if (!access.isAdmin && !p.team.cards_released) {
+                return showMessage(app, "Player cards aren't out yet", "The league admin will release them for your team.");
+            }
 
             document.title = `${fullName(p)} Player Card`;
             app.innerHTML = `

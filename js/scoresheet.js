@@ -1,16 +1,17 @@
 // Scoresheet team pickers.
 // Pick a Home or Away team, and that side's first 8 player rows become
 // drop-downs of the team's roster (picking a player fills in their number).
-// The last 2 rows stay free-type for players not on the roster yet.
-// With no team picked (or if the database can't be reached), every row stays
-// free-type, exactly like the paper sheet.
-import { isConfigured, db, getTeams, getScoresheetRoster } from "./data.js";
+// The last 2 rows (and any rows past the roster size) stay free-type for
+// players not on the roster yet.
+// Only registered teams can play, and Home and Away must be different teams.
+// Only scorers and admins get pickers; js/live.js calls initPickers() for them.
+import { getScoresheetRoster } from "./data.js";
 import { esc } from "./render.js";
 
-const PICK_ROWS = 8; // rows 1-8 get drop-downs; rows 9-10 stay free-type
+const PICK_ROWS = 8; // at most rows 1-8 get drop-downs; rows 9-10 stay free-type
 
 // Player rows for one side, skipping the header row.
-function rowsFor(side) {
+export function rowsFor(side) {
   return [...document.querySelectorAll(`.${side}PlayerInfo tr`)].slice(1);
 }
 
@@ -27,7 +28,7 @@ function addPlayerSelects(side) {
 }
 
 // Grey out players already picked in another row on the same side.
-function lockPickedPlayers(side) {
+export function lockPickedPlayers(side) {
   const selects = [...document.querySelectorAll(`.${side}PlayerInfo select.playerPick`)];
   const picked = new Set(selects.map(s => s.value).filter(Boolean));
   for (const select of selects) {
@@ -38,8 +39,11 @@ function lockPickedPlayers(side) {
 }
 
 // Switch a side between roster drop-downs (players given) and free-type (players null).
+// A team gets one drop-down row per roster player (up to 8), so a team with
+// few or no players entered yet still has free-type rows to write in.
 function showRoster(side, players) {
-  rowsFor(side).slice(0, PICK_ROWS).forEach(row => {
+  const pickRows = players ? Math.min(PICK_ROWS, players.length) : 0;
+  rowsFor(side).slice(0, PICK_ROWS).forEach((row, i) => {
     const input = row.querySelector(`input.${side}Notes`);
     const select = row.querySelector("select.playerPick");
     const num = row.querySelector(`.${side}Num`);
@@ -47,7 +51,8 @@ function showRoster(side, players) {
     // Clear numbers this picker filled in for the previous team.
     if (num.dataset.autofilled) { num.value = ""; delete num.dataset.autofilled; }
 
-    if (!players) {
+    if (i >= pickRows) {
+      select.innerHTML = ""; // no leftover pick from the previous team
       select.hidden = true;
       input.hidden = false;
       return;
@@ -61,27 +66,15 @@ function showRoster(side, players) {
   lockPickedPlayers(side);
 }
 
-async function setupSide(side, teams) {
+function setupSide(side, teams) {
   const teamSelect = document.querySelector(`select.${side}Team`);
-  const teamText = document.querySelector(`input.${side}Team`);
   teamSelect.insertAdjacentHTML("beforeend", teams.map(t =>
     `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join(""));
 
+  // When the roster has loaded, tell js/live.js so it saves the new rows.
   teamSelect.addEventListener("change", async () => {
-    const teamId = teamSelect.value;
-    // The text box is only for teams that aren't in the list.
-    teamText.hidden = Boolean(teamId);
-    if (!teamId) return showRoster(side, null);
-    try {
-      // Names + numbers only, alphabetical by first name (sorted by the database).
-      showRoster(side, await getScoresheetRoster(teamId));
-    } catch (err) {
-      console.error(err);
-      alert("Couldn't load that roster. You can still type the names.");
-      teamSelect.value = "";
-      teamText.hidden = false;
-      showRoster(side, null);
-    }
+    await loadTeam(side);
+    document.dispatchEvent(new CustomEvent("sheet:changed"));
   });
 
   // Picking a player fills in their number.
@@ -99,29 +92,47 @@ async function setupSide(side, teams) {
   });
 }
 
-async function main() {
-  if (!isConfigured) return;
-  // Rosters are for signed-in coaches and admins. Signed out, the sheet is all free-type.
-  const { data: { session } } = await db.auth.getSession();
-  if (!session) {
-    const hint = document.createElement("p");
-    hint.className = "signInHint";
-    hint.textContent = "Sign in on the Rosters page to pick teams and players.";
-    document.querySelector(".pageNav")?.after(hint);
-    return;
-  }
-  let teams;
-  try {
-    teams = await getTeams();
-  } catch (err) {
-    // Offline or database down: the sheet still works as free-type.
-    console.error(err);
-    return;
-  }
-  for (const side of ["home", "away"]) {
-    addPlayerSelects(side);
-    await setupSide(side, teams);
+// A team picked on one side can't be picked on the other.
+function lockTeams() {
+  const home = document.querySelector("select.homeTeam");
+  const away = document.querySelector("select.awayTeam");
+  for (const [select, other] of [[home, away], [away, home]]) {
+    for (const opt of select.options) {
+      if (opt.value) opt.disabled = opt.value === other.value;
+    }
   }
 }
 
-main();
+// Show the picked team's roster on one side.
+async function loadTeam(side) {
+  const teamSelect = document.querySelector(`select.${side}Team`);
+  const teamId = teamSelect.value;
+  lockTeams();
+  if (!teamId) return showRoster(side, null);
+  try {
+    // Names + numbers only, alphabetical by first name (sorted by the database).
+    showRoster(side, await getScoresheetRoster(teamId));
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't load that roster. Check the connection and pick the team again.");
+    teamSelect.value = "";
+    lockTeams();
+    showRoster(side, null);
+  }
+}
+
+// Pick a team in code (used when resuming a saved live game). Waits for the roster.
+export async function setTeam(side, teamId) {
+  const teamSelect = document.querySelector(`select.${side}Team`);
+  teamSelect.value = teamId ?? "";
+  if (teamSelect.value !== (teamId ?? "")) teamSelect.value = ""; // team no longer exists
+  await loadTeam(side);
+}
+
+// Fill the team drop-downs and add the player drop-downs (scorers and admins).
+export function initPickers(teams) {
+  for (const side of ["home", "away"]) {
+    addPlayerSelects(side);
+    setupSide(side, teams);
+  }
+}
