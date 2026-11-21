@@ -5,6 +5,7 @@ import { db, isConfigured, getTeams, getActivePlayers } from "./data.js";
 import { esc, showMessage } from "./render.js";
 
 const app = document.getElementById("app");
+const topNav = document.getElementById("topNav"); // "← Scoresheet", signed-in only
 const MIN_PASSWORD = 8;
 // A password-reset email link lands here with "type=recovery" in the URL.
 // Read it now, before the Supabase client tidies the URL.
@@ -137,6 +138,7 @@ function authView() {
     },
   };
   const s = screens[state.mode];
+  topNav.hidden = true;
   app.innerHTML = `
     <section class="panel narrow">
       <h1>${s.title}</h1>
@@ -216,6 +218,7 @@ function rosterView() {
       </div>
     </section>` : "";
 
+  topNav.hidden = false;
   app.innerHTML = `
     <div class="team-head">
       <div>

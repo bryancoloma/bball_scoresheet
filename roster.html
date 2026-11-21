@@ -13,7 +13,8 @@
 <body>
     <!-- Coaches and admins sign in here to add and edit players. Open a team with: roster.html?team=<team slug> -->
     <div class="wrap">
-        <nav class="top-nav"><a href="index.html">&larr; Scoresheet</a></nav>
+        <!-- Shown only after sign-in (js/roster.js): the scoresheet is for signed-in users. -->
+        <nav class="top-nav" id="topNav" hidden><a href="index.html">&larr; Scoresheet</a></nav>
         <main id="app" class="wrap" style="padding:0" aria-live="polite"><p class="muted">Loading&hellip;</p></main>
     </div>
     <script type="module" src="js/roster.js"></script>

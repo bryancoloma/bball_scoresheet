@@ -216,9 +216,10 @@ async function main() {
   }
   if (access.isAdmin) document.querySelector(".pageNav")?.insertAdjacentHTML("beforeend", `<a href="admin.html">Admin</a>`);
 
+  // The scoresheet is for signed-in users only: send everyone else to sign in,
+  // then back here (to the same game, if the link had one).
   if (!access.user) {
-    setReadOnly(true);
-    return showBar(`<a href="roster.html?next=index.html">Sign in</a> to keep score or watch live games.`);
+    return location.replace("roster.html?next=" + encodeURIComponent("index.html" + location.search));
   }
   if (!access.isApproved) {
     setReadOnly(true);

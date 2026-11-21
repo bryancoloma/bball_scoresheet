@@ -68,6 +68,7 @@ a { color: var(--court); }
 a:focus-visible { outline: 3px solid var(--court); outline-offset: 2px; border-radius: 4px; }
 
 .top-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.top-nav[hidden] { display: none; }
 .top-nav a { font-weight: 600; text-decoration: none; }
 .top-nav a:hover { text-decoration: underline; }
 
