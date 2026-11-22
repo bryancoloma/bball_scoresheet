@@ -51,6 +51,9 @@ input[type="checkbox"] { accent-color: var(--brand-orange); }
      print), navy for Away. Wins over score.css's print colors (loaded later). */
   :root { --court: #c96f00 !important; --away: #131b2b !important; --court-soft: #ffffff !important; }
   input[type="checkbox"] { accent-color: #c96f00; }
+  /* White paper all the way to the edge (the dark theme otherwise fills the margins). */
+  :root { color-scheme: light !important; --bg: #ffffff !important; }
+  html, body { background: #ffffff !important; }
   body { border-top: 0; }
   h1 { color: #000000; }
   .pageNav a, .top-nav a { color: #000000; }
