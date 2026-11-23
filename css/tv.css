@@ -1,0 +1,118 @@
+/* TV scoreboard (tv.html). Sized from the screen width so it reads from across
+   the gym on a TV, and still works on a laptop or iPad. */
+body.tvPage {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+.tvBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+}
+.tvBar a { color: #ffffff; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; text-decoration: none; }
+.tvBar a:hover { color: var(--brand-orange); }
+.tvBar .button { margin-left: auto; }
+.tvConn { color: var(--muted); font-size: 0.9rem; }
+/* Full screen: just the scoreboard. */
+:fullscreen .tvBar { display: none; }
+
+.tv { padding: 0 clamp(16px, 3vw, 48px) 24px; }
+
+.tvEmpty {
+  margin: 20vh auto 0;
+  text-align: center;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 4vw, 3.5rem);
+}
+.tvEmpty span { display: block; margin-top: 0.5em; font-family: var(--body); font-size: 0.45em; color: var(--muted); }
+
+/* ---------- score ---------- */
+.tvScore {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(12px, 3vw, 48px);
+  padding: clamp(8px, 1.5vh, 24px) 0 clamp(20px, 3.5vh, 40px);
+  border-bottom: 3px solid var(--line);
+}
+.tvTeam { display: flex; flex-direction: column; gap: 0.2em; min-width: 0; }
+.tvTeam.home { text-align: right; align-items: flex-end; }
+.tvSide { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: clamp(0.8rem, 1.4vw, 1.4rem); font-weight: 700; }
+.tvName {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, min(4.5vw, 8vh), 5rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.tvTeam.home .tvName { color: var(--court); }
+.tvTeam.away .tvName { color: var(--away); }
+.tvFouls { font-size: clamp(1rem, 2vw, 2rem); color: var(--muted); }
+.tvFouls b { color: var(--ink); }
+
+.tvNums {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+  position: relative;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, min(11vw, 19vh), 13rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.tvNums .dash { color: var(--muted); }
+.tvState {
+  position: absolute;
+  left: 50%;
+  bottom: -1.6em;
+  transform: translateX(-50%);
+  font-size: clamp(0.8rem, 1.4vw, 1.4rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tvState.live { color: var(--brand-orange); }
+
+/* ---------- players on the court ---------- */
+.tvCourt {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(16px, 3vw, 48px);
+  padding-top: clamp(12px, 2.5vh, 32px);
+}
+.tvRoster h2 {
+  margin: 0 0 0.4em;
+  font-family: var(--display);
+  font-size: clamp(1.2rem, min(2.4vw, 4.2vh), 2.6rem);
+}
+.tvRoster.home h2 { color: var(--court); }
+.tvRoster.away h2 { color: var(--away); }
+.tvRoster h2 span { display: block; font-family: var(--body); font-size: 0.55em; color: var(--muted); font-weight: 600; }
+.tvRoster table { width: 100%; border-collapse: collapse; font-size: clamp(1rem, min(2.2vw, 4vh), 2.4rem); }
+.tvRoster th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 0.4em 0.3em;
+}
+.tvRoster td { padding: 0.2em 0.4em; border-top: 1px solid var(--line); }
+.tvRoster .num { width: 2.5em; font-family: var(--display); font-weight: 700; color: var(--muted); }
+.tvRoster .name { font-weight: 600; overflow-wrap: anywhere; }
+.tvRoster .tvStat, .tvRoster th:nth-child(n+3) { width: 3.5em; text-align: center; font-variant-numeric: tabular-nums; }
+.tvRoster .tvStat { font-family: var(--display); font-weight: 700; }
+/* 5 fouls: out of the game. */
+.tvRoster .fouledOut .name, .tvRoster .fouledOut .tvStat:last-child { color: #ff6b6b; }
+.tvWait { color: var(--muted); font-size: 0.7em; }
+
+/* Phone / portrait iPad: teams stack. */
+@media (max-width: 700px) {
+  .tvCourt { grid-template-columns: 1fr; }
+}

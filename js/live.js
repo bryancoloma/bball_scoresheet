@@ -7,8 +7,8 @@
 // Open a specific game with index.html?game=<id> (the admin page links these).
 import { isConfigured, db, getMyAccess, getTeams } from "./data.js";
 import { esc, shortDate } from "./render.js";
-import { initPickers } from "./scoresheet.js";
-import { readSheet, applySheet } from "./sheetstate.js";
+import { initPickers, rowsFor } from "./scoresheet.js";
+import { readSheet, applySheet, shortBoxes, PLAYERS_PER_BOX } from "./sheetstate.js";
 import { setupSave } from "./savegame.js";
 
 const SAVE_DELAY_MS = 800;     // wait this long after the last tap before saving
@@ -129,7 +129,7 @@ async function saveNow() {
       // No row updated: the game was saved/locked (or deleted) somewhere else.
       if (!updated.length) return lockedElsewhere();
     }
-    setStatus(`<span class="dot live"></span> Keeping score &middot; live &middot; saved ${clock(new Date().toISOString())}`);
+    setStatus(`<span class="dot live"></span> Keeping score &middot; live &middot; saved ${clock(new Date().toISOString())}${lineupNote(row.sheet)}`);
   } catch (err) {
     console.error(err);
     dirty = true;
@@ -164,7 +164,42 @@ function onLocked() {
   setStatus(`Final &middot; saved and locked. An admin can unlock it if something needs fixing.`);
 }
 
+// Each playtime box (column) needs exactly 5 players, so the TV page
+// (tv.html) always shows a real 5 on the court:
+//   * a 6th tick in a box is blocked
+//   * a later box can't be started until every earlier started box has 5
+//   * Save game refuses a sheet with a short box (js/savegame.js)
+function checkPlaytimeTick(e) {
+  const box = e.target;
+  const side = box.matches?.(".homePlaytimeCheckbox") ? "home" : box.matches?.(".awayPlaytimeCheckbox") ? "away" : null;
+  // During a click the box already shows its NEW state (preventDefault undoes it).
+  if (!side || !box.checked || locked) return; // only ticking (not unticking) is limited
+  const cls = `.${side}PlaytimeCheckbox`;
+  const col = [...box.closest("tr").querySelectorAll(cls)].indexOf(box);
+  const counts = Array(8).fill(0); // ticks per box for this team, including this one
+  rowsFor(side).forEach(row => row.querySelectorAll(cls).forEach((c, j) => { if (c.checked) counts[j]++; }));
+
+  let problem = "";
+  if (counts[col] > PLAYERS_PER_BOX) {
+    problem = `<b>Only ${PLAYERS_PER_BOX} players per playtime box.</b> Untick a player in box ${col + 1} first.`;
+  } else {
+    const open = counts.findIndex((n, j) => j < col && n > 0 && n < PLAYERS_PER_BOX);
+    if (open >= 0) problem = `<b>Finish box ${open + 1} first:</b> it has ${counts[open]} of ${PLAYERS_PER_BOX} players.`;
+  }
+  if (problem) {
+    e.preventDefault();
+    setStatus(problem);
+  }
+}
+
+// Shown after each save while a box is still short, e.g. "Eagles box 2: 3 of 5 players".
+function lineupNote(sheet) {
+  return shortBoxes(sheet)
+    .map(s => ` &middot; <b>${esc(s.team)} box ${s.box}: ${s.count} of ${PLAYERS_PER_BOX} players</b>`).join("");
+}
+
 function startScoring() {
+  document.addEventListener("click", checkPlaytimeTick, true);
   // Any typing, ticking or +1/-1 tap saves (debounced).
   for (const type of ["input", "change"]) {
     document.addEventListener(type, e => {

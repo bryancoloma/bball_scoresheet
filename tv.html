@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Scoreboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="css/stats.css">
+    <link rel="stylesheet" href="css/theme-shepherd.css">
+    <link rel="stylesheet" href="css/tv.css">
+</head>
+<body class="tvPage">
+    <!-- Live scoreboard for a TV in the gym: score, team fouls and each team's
+         5 players on the court, following the scorer's sheet (js/tv.js).
+         Signed-in admins, coaches and scorers only. -->
+    <nav class="tvBar">
+        <a href="index.html">&larr; Scoresheet</a>
+        <span id="tvConn" class="tvConn" aria-live="polite"></span>
+        <button id="tvFull" type="button" class="button ghost">Full screen</button>
+    </nav>
+    <main id="tv" class="tv" aria-live="polite"><p class="tvEmpty">Loading&hellip;</p></main>
+    <script type="module" src="js/tv.js"></script>
+</body>
+</html>

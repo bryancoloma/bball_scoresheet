@@ -101,6 +101,28 @@ export async function applySheet(sheet, { withPickers }) {
   syncScoreboard();
 }
 
+// Each playtime box (column) must have exactly 5 players or none.
+export const PLAYERS_PER_BOX = 5;
+
+// How many players are ticked in each of the 8 playtime boxes for one side.
+export function boxCounts(side) {
+  const counts = Array(8).fill(0);
+  (side?.rows ?? []).forEach(r => r.periods?.forEach((on, j) => { if (on) counts[j]++; }));
+  return counts;
+}
+
+// Boxes that were started but don't have 5 players yet, for both teams:
+// [{ team: "Shepherd Eagles", box: 2, count: 3 }, ...]
+export function shortBoxes(sheet) {
+  const short = [];
+  for (const side of SIDES) {
+    boxCounts(sheet[side]).forEach((n, j) => {
+      if (n > 0 && n < PLAYERS_PER_BOX) short.push({ team: sheet[side]?.label ?? cap(side), box: j + 1, count: n });
+    });
+  }
+  return short;
+}
+
 // Everything finish_game() needs for one side: roster players (by id),
 // typed-in players (guests), and rows with stats but no name (can't be saved).
 export function readSide(sheet, side) {

@@ -38,7 +38,7 @@ function friendlyError(err) {
 // Only our own pages are allowed, so the link can't send people to another site.
 function nextPage() {
   const next = new URLSearchParams(location.search).get("next") ?? "";
-  return /^(index|team|player|card|admin)\.html(\?[\w=&%.-]*)?$/.test(next) ? next : null;
+  return /^(index|team|player|card|admin|tv)\.html(\?[\w=&%.-]*)?$/.test(next) ? next : null;
 }
 
 // The two password boxes must match and be long enough. Returns an error message or "".

@@ -5,7 +5,7 @@
 // LOCKS the game. Only an admin can unlock it.
 import { db } from "./data.js";
 import { esc } from "./render.js";
-import { readSheet, readSide } from "./sheetstate.js";
+import { readSheet, readSide, shortBoxes, PLAYERS_PER_BOX } from "./sheetstate.js";
 
 const dialog = document.getElementById("saveDialog");
 const body = dialog.querySelector(".saveBody");
@@ -42,6 +42,12 @@ export function setupSave(live) {
     const home = readSide(sheet, "home"), away = readSide(sheet, "away");
     // Only registered teams play, so both sides are always saved.
     if (!home.teamId || !away.teamId) return show("<p>Pick the <b>Home</b> and <b>Away</b> teams before saving.</p>", false);
+    // Every playtime box that was used needs exactly 5 players.
+    const short = shortBoxes(sheet);
+    if (short.length) {
+      return show(`<p><b>Each playtime box needs ${PLAYERS_PER_BOX} players.</b> Fix these before saving:</p>
+        <ul class="saveNotes">${short.map(s => `<li>${esc(s.team)}: box ${s.box} has ${s.count} of ${PLAYERS_PER_BOX}</li>`).join("")}</ul>`, false);
+    }
     const saveable = [home, away];
     pending = {
       sides: saveable.map(s => {
