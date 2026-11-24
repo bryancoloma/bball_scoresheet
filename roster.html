@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Security rule: the browser only runs code and loads files from this site, the Supabase
+         library on jsDelivr, Google Fonts and our Supabase project. Anything else (ads, injected
+         scripts) is blocked. If you add a new outside service, add its address here on every page. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net/npm/@supabase/ https://cdn.jsdelivr.net/npm/tslib@2.8.1/ https://cdn.jsdelivr.net/npm/iceberg-js@0.8.1/; connect-src 'self' https://nizgsrsobdyrgmpinjms.supabase.co; img-src 'self' data: blob: https://nizgsrsobdyrgmpinjms.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Rosters</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">

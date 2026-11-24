@@ -1,0 +1,110 @@
+import { isConfigured, getMyAccess, getGames, getRoster } from "./data.js";
+import { esc, avg, fullName, shortDate, resultCell, recordText, thumb, showMessage, signInPrompt } from "./render.js";
+
+const app = document.getElementById("app");
+
+// showCards: the little card link shows only once an admin releases cards (or for admins).
+function rosterRow(p, team, showCards) {
+    const s = p.season;
+    return `<tr>
+        <td class="jersey-cell">${esc(p.jersey)}</td>
+        <td>
+            <div class="player-cell">
+                ${showCards ? thumb(p, team) : ""}
+                <div>
+                    <a class="player-name" href="player.html?id=${encodeURIComponent(p.slug)}">${esc(fullName(p))}</a>
+                    <span class="player-sub">${esc(p.position)} &middot; ${esc(p.grade)} grade</span>
+                </div>
+            </div>
+        </td>
+        <td class="num">${s.games}</td>
+        <td class="num">${avg(s.points, s.games)}</td>
+        <td class="num">${avg(s.fouls, s.games)}</td>
+        <td class="num">${avg(s.periods, s.games)}</td>
+        <td class="num">${s.points}</td>
+    </tr>`;
+}
+
+async function main() {
+    if (!isConfigured) {
+        return showMessage(app, "Not connected yet", "Add the Supabase URL and publishable key to js/config.js.");
+    }
+    // Admin: every team. Coach: only their own. The database enforces the same rule.
+    const access = await getMyAccess();
+    if (!access.user) return signInPrompt(app);
+    // Parents don't use the scoresheet.
+    document.getElementById("scoresheetLink").hidden = access.parentOnly;
+    if (!access.teams.length) {
+        return access.isApproved
+            ? showMessage(app, "Coaches, parents and admins only", "Team pages are for each team's coaches and parents. Live games are on the scoresheet.")
+            : showMessage(app, "Waiting for approval", "The admin needs to approve your account and link it to your team.");
+    }
+    const slug = new URLSearchParams(location.search).get("team");
+    const team = slug ? access.teams.find(t => t.slug === slug) : access.teams[0];
+    if (!team) return showMessage(app, "No access to that team", "You can only view your own team.");
+
+    const [roster, record] = await Promise.all([getRoster(team.id), getGames(team.id)]);
+    const showCards = access.isAdmin || team.cards_released;
+
+    // Team drop-down when there's more than one team to choose from (always for an admin).
+    const picker = access.teams.length > 1 ? `
+        <label class="team-pick">${access.isAdmin ? "All teams" : "Your teams"}
+            <select id="team-picker">${access.teams.map(t =>
+                `<option value="${esc(t.slug)}"${t.id === team.id ? " selected" : ""}>${esc(t.name)} (${esc(t.season)})</option>`).join("")}
+            </select>
+        </label>` : "";
+    roster.sort((a, b) => b.season.points - a.season.points);
+    const teamPts = record.games.reduce((sum, g) => sum + (g.team_score ?? 0), 0);
+
+    document.title = `${team.name} Team Page`;
+    app.innerHTML = `
+        ${picker}
+        <div class="team-head">
+            <div>
+                <p class="eyebrow">${esc(team.org)} &middot; ${esc(team.season)} season</p>
+                <h1>${esc(team.name)}</h1>
+            </div>
+            <div class="team-stats">
+                <div class="chip"><span class="value">${recordText(record)}</span><span class="label">Record</span></div>
+                <div class="chip"><span class="value">${avg(teamPts, record.games.length)}</span><span class="label">Points / game</span></div>
+                <div class="chip"><span class="value">${roster.length}</span><span class="label">Players</span></div>
+            </div>
+        </div>
+
+        <section class="panel" aria-label="Roster">
+            <h2>Roster</h2>
+            <div class="table-scroll">
+                <table class="data roster">
+                    <thead><tr>
+                        <th>#</th><th>Player</th>
+                        <th class="num">Games</th><th class="num">Pts / G</th><th class="num">Fouls / G</th>
+                        <th class="num">Periods / G</th><th class="num">Total pts</th>
+                    </tr></thead>
+                    <tbody>${roster.map(p => rosterRow(p, team, showCards)).join("")}</tbody>
+                </table>
+            </div>
+            <p class="muted">${showCards ? "Click a name to open the player's stats, or the small card to see their player card."
+                : "Click a name to open the player's stats. Player cards appear here once the league releases them."}</p>
+        </section>
+
+        <section class="panel" aria-label="Recent games">
+            <h2>Recent games</h2>
+            <div class="table-scroll">
+                <table class="data">
+                    <thead><tr><th>Date</th><th>Opponent</th><th>Result</th></tr></thead>
+                    <tbody>${record.games.map(g => `<tr><td>${shortDate(g.game_date)}</td><td>${esc(g.opponent)}</td>${resultCell(g)}</tr>`).join("") ||
+                        `<tr><td colspan="3" class="muted">No games yet.</td></tr>`}</tbody>
+                </table>
+            </div>
+        </section>`;
+
+    // Switching teams reloads the page for that team, so the link can be shared or bookmarked.
+    document.getElementById("team-picker")?.addEventListener("change", e => {
+        location.search = "?team=" + encodeURIComponent(e.target.value);
+    });
+}
+
+main().catch(err => {
+    console.error(err);
+    showMessage(app, "Couldn't load the team", "Please try again in a moment.");
+});

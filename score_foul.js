@@ -188,3 +188,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('h3[id^="addHomeTotalFouls"]').forEach(h3 => updateFoulDecrementButton(h3.id));
     document.querySelectorAll('h3[id^="addAwayTotalFouls"]').forEach(h3 => updateFoulDecrementButton(h3.id));
 });
+// Wire up the +1/-1 buttons and jersey-number boxes. (These used to be inline
+// onclick/oninput attributes; the page's Content-Security-Policy blocks inline
+// code, so they're attached here instead.) Each button's cell holds one <h3>
+// whose id says the team and stat, e.g. "addHomeTotalPoints3".
+const SCORE_BUTTONS = {
+    "increment-button-score": { home: incrementHomeTotalPoints, away: incrementAwayTotalPoints },
+    "decrement-button-score": { home: decrementHomeTotalPoints, away: decrementAwayTotalPoints },
+    "increment-button-foul":  { home: incrementHomeTotalFouls,  away: incrementAwayTotalFouls },
+    "decrement-button-foul":  { home: decrementHomeTotalFouls,  away: decrementAwayTotalFouls },
+};
+document.addEventListener('DOMContentLoaded', () => {
+    for (const [cls, fns] of Object.entries(SCORE_BUTTONS)) {
+        document.querySelectorAll(`button.${cls}`).forEach(btn => {
+            const id = btn.closest('td').querySelector('h3').id;
+            const fn = id.startsWith('addHome') ? fns.home : fns.away;
+            btn.addEventListener('click', () => fn(id, 1));
+        });
+    }
+    // Jersey numbers: digits only.
+    document.querySelectorAll('input.homeNum, input.awayNum').forEach(input => {
+        input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, ''); });
+    });
+});

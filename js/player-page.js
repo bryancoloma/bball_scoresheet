@@ -1,0 +1,80 @@
+import { isConfigured, getMyAccess, getPlayer } from "./data.js";
+import { esc, avg, fullName, shortDate, photoBlock, quarters, resultCell, recordText, thumb, showMessage, signInPrompt } from "./render.js";
+
+const app = document.getElementById("app");
+
+async function main() {
+    if (!isConfigured) {
+        return showMessage(app, "Not connected yet", "Add the Supabase URL and publishable key to js/config.js.");
+    }
+    // Signed-in coaches and admins only; the database also hides other teams' players.
+    const access = await getMyAccess();
+    if (!access.user) return signInPrompt(app);
+    const slug = new URLSearchParams(location.search).get("id");
+    const p = slug ? await getPlayer(slug) : null;
+    if (!p) return showMessage(app, "Player not found", "Check the link. You can only view players on your own team.");
+
+    const { team, season: s, record } = p;
+    const teamLink = `team.html?team=${encodeURIComponent(team.slug)}`;
+    const cardLink = `card.html?id=${encodeURIComponent(p.slug)}`;
+    // Cards stay hidden from coaches until an admin releases them for the team.
+    const showCards = access.isAdmin || team.cards_released;
+    const log = p.log.map(g => `<tr>
+        <td>${shortDate(g.game_date)}</td><td>${esc(g.opponent)}</td>${resultCell(g)}
+        <td>${quarters(g.periods)}</td>
+        <td class="num">${g.points}</td><td class="num">${g.fouls}</td>
+    </tr>`).join("");
+
+    document.title = `${fullName(p)} Player Stats`;
+    app.innerHTML = `
+        <nav class="top-nav"><a href="${teamLink}">&larr; ${esc(team.name)} roster</a></nav>
+
+        <section class="panel profile" aria-label="Player profile">
+            ${photoBlock(p)}
+            <div class="info">
+                <div>
+                    <p class="eyebrow">${esc(team.org)} &middot; ${esc(team.name)}</p>
+                    <div class="name-row"><span class="jersey">#${esc(p.jersey)}</span><h1>${esc(fullName(p))}</h1></div>
+                </div>
+                <ul class="meta">
+                    <li>Position <b>${esc(p.position)}</b></li>
+                    <li>Grade <b>${esc(p.grade)}</b></li>
+                    <li>Team <b>${esc(team.name)}</b></li>
+                </ul>
+                <div>
+                    <p class="eyebrow" style="margin-bottom:8px">Season averages</p>
+                    <div class="stats">
+                        <div class="stat"><span class="value">${avg(s.points, s.games)}</span><span class="label">Points / game</span></div>
+                        <div class="stat"><span class="value">${avg(s.fouls, s.games)}</span><span class="label">Fouls / game</span></div>
+                        <div class="stat"><span class="value">${avg(s.periods, s.games)}</span><span class="label">Periods played</span></div>
+                        <div class="stat"><span class="value">${s.games}</span><span class="label">Games</span></div>
+                    </div>
+                </div>
+                <p class="totals">
+                    <span>Season points <b>${s.points}</b></span>
+                    <span>Season fouls <b>${s.fouls}</b></span>
+                    <span>High game <b>${s.high_points} pts</b></span>
+                    <span>Team record <b>${recordText(record)}</b></span>
+                </p>
+                ${showCards ? `<div class="profile-actions">
+                    ${thumb(p, team)}
+                    <a class="button-link" href="${cardLink}">See player card</a>
+                </div>` : ""}
+            </div>
+        </section>
+
+        <section class="panel" aria-label="Game log">
+            <h2>Game log</h2>
+            <div class="table-scroll">
+                <table class="data log">
+                    <thead><tr><th>Date</th><th>Opponent</th><th>Result</th><th>Playtime</th><th class="num">Pts</th><th class="num">Fouls</th></tr></thead>
+                    <tbody>${log || `<tr><td colspan="6" class="muted">No games yet.</td></tr>`}</tbody>
+                </table>
+            </div>
+        </section>`;
+}
+
+main().catch(err => {
+    console.error(err);
+    showMessage(app, "Couldn't load the player", "Please try again in a moment.");
+});
